@@ -1,5 +1,5 @@
 !
-! lab1_3_a.f90
+! ej6_a.f90
 !
 ! Copyright 2016 Bruno S <bruno@oac.unc.edu.ar>
 !
@@ -17,51 +17,50 @@
 ! along with this program; if not, write to the Free Software
 ! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ! MA 02110-1301, USA.
-!
-PROGRAM lab1_3_a
+
+PROGRAM ej6_a
+
+use precision, pr => dp
+
 IMPLICIT NONE
 
-INTEGER :: i, j, k, n
-REAL(KIND=8) :: h, x0, xf, xi, integ, I_exact, er
-OPEN(UNIT=10, FILE='salida_ej3_a.dat', STATUS='UNKNOWN', ACTION='WRITE')
+integer :: i, j, k, n
+real(pr) :: x, v, a, h, t0, tf, x0, v0, t
 
-x0 = 0.d0
-xf = 1.d0
+open(unit=10, file='ej6_a.dat', status='UNKNOWN', action='WRITE')
 
-WRITE(*,*) "EJERCICIO 3 a LABORATORIO 1"
-WRITE(10, *) "# I  n  k  err   I_exact"
+write(10, *) "#  t   x   v"
 
-I_exact = f(1.d0) - 1.d0
+t0 = 0._pr
+tf = 10._pr
 
-do k = 2, 16, 1
-    n = 2**k
-    h = (xf - x0)/n
+!condiciones iniciales
+x0 = 1._pr
+v0 = 1._pr
+n = 10000
 
-    xi = x0
-    integ = f(xi) / 2.d0
-    do i=1, n-1, 1                          ! INTEGRO DADO N
-        xi = x0 + (h * i)
-        integ = integ + f(xi)
-    end do
+h = (tf - t0)/real(n, pr)
 
-    integ = integ + f(xf) / 2.d0
-    integ = integ * h
-
-    er = ABS(integ - I_exact)
-    WRITE(10, *) integ, n, k, er, I_exact
-
+! para t == 0
+v = v0
+x = x0
+do i = 1, n
+    v = v + h * f(x)
+    x = x + h * v
+    t = t0 + i * h
+    write(10, *) t, x, v
 end do
+
 
 CONTAINS
 
-FUNCTION f(x)
-REAL (KIND=8) :: f
-REAL (KIND=8), INTENT(IN) :: x
+function f(x)
+real (pr) :: f
+real (pr), intent(in) :: x
+integer(kind=8), parameter :: k = 1
 
-    f = DEXP(x)
+    f = -k*x
 
-END FUNCTION f
+end function f
 
-
-
-END PROGRAM
+END PROGRAM ej6_a

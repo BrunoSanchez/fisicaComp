@@ -33,7 +33,7 @@ WRITE(10, *) "# I  n  k  err   I_exact"
 
 I_exact = f(1.d0) - 1.d0
 
-do k = 2, 8, 1
+do k = 2, 16, 1
     I_par = 0.d0
     I_impar = 0.d0
     I_tot = 0.d0

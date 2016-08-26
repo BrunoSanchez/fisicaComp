@@ -23,24 +23,68 @@
 #
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn
+#import seaborn
 
 from astropy.io import ascii
 
+# =============================================================================
+#  ejercicio 2
+# =============================================================================
 t = ascii.read('salida_ej2.dat', format='commented_header')
-
 plt.loglog(t['h'], t['er'], 'b')
 plt.xlabel('h')
 plt.ylabel('error')
 plt.savefig('ej_2.ps')
 plt.close()
 
+# =============================================================================
+# ejercicio 3
+# =============================================================================
+t = ascii.read('salida_ej3_a.dat')
+ts = ascii.read('salida_ej3_b.dat')
+plt.loglog(t['n'], t['err'], 'g',alpha=0.5, label='trapecio')
+plt.loglog(t['n'], 1./(t['n']**2), 'g--', alpha=0.5, label=r'$\sim N^{-2}$')
+plt.loglog(ts['n'], ts['err'], 'b', alpha=0.5, label='simpson')
+plt.loglog(t['n'], 1./(t['n']**4), 'b--', alpha=0.5, label=r'$\sim N^{-4}$')
+plt.legend(loc='best')
+plt.xlabel('N')
+plt.ylabel(r'$\epsilon$')
+plt.savefig('ej_3.eps')
+plt.close()
 
+# =============================================================================
+# ejercicio 6
+# =============================================================================
+t = ascii.read('ej6_a.dat')
+plt.plot(t['t'], t['x'], label='posicion')
+plt.plot(t['t'], t['v'], label='velocidad')
+plt.plot(t['t'], np.sin(t['t']) + np.cos(t['t']), 'r--',label='sol. exacta')
+plt.legend(loc='best')
+plt.xlabel(r'$t$')
+plt.ylabel(r'$x$')
+plt.savefig('ej6_a.eps')
+plt.close()
+
+t = ascii.read('ej6_b.dat')
+plt.plot(t['t'], t['x'], label='posicion')
+plt.plot(t['t'], np.sin(t['t']) + np.cos(t['t']), 'r--',label='sol. exacta')
+plt.plot(t['t'], t['v'], label='velocidad')
+plt.legend(loc='best')
+plt.xlabel(r'$t$')
+plt.ylabel(r'$x$')
+plt.savefig('ej6_b.eps')
+plt.close()
+
+
+
+# =============================================================================
+# FFT
+# =============================================================================
 t = ascii.read('f_t_ej7.dat')
-
 plt.plot(t['t'], t['f'], 'b')
 plt.xlabel('t')
 plt.ylabel('f')
 plt.savefig('f_t_ej_7.ps')
 plt.close()
 
+t = ascii.read('fft_ej7.dat')
