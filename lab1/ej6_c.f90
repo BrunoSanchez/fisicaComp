@@ -27,12 +27,12 @@ use precision, pr => dp
 IMPLICIT NONE
 
 integer :: i, j, k, n
-real(pr) :: x, v, a, h, t0, tf, x0, v0, t
+real(pr) :: x, v, a, h, t0, tf, x0, v0, t, error
 real(pr) :: fx1, fx2, fx3, fx4, fv1, fv2, fv3, fv4
 
 open(unit=10, file='ej6_c.dat', status='UNKNOWN', action='WRITE')
 
-write(10, *) "#  t   x   v"
+write(10, *) "#  t   x   v   err"
 
 t0 = 0._pr
 tf = 10._pr
@@ -40,7 +40,7 @@ tf = 10._pr
 !condiciones iniciales
 x0 = 1._pr
 v0 = 1._pr
-n = 10000
+n = 1000000
 
 h = (tf - t0)/real(n, pr)
 
@@ -60,7 +60,8 @@ do i = 1, n
     x = x + h * v  ! ya que f no depende de t
 
     t = t0 + i * h
-    write(10, *) t, x, v
+    error = abs(x - sin(t) - cos(t))
+    write(10, *) t, x, v, error
 end do
 
 CONTAINS
@@ -75,4 +76,4 @@ integer(kind=8), parameter :: k = 1
 end function f
 
 
-END PROGRAM ej6_b
+END PROGRAM ej6_c

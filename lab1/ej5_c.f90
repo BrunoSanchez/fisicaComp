@@ -1,5 +1,5 @@
 !
-! ej6_b.f90
+! ej6_c.f90
 !
 ! Copyright 2016 Bruno S <bruno@oac.unc.edu.ar>
 !
@@ -20,58 +20,57 @@
 !
 !
 !
-PROGRAM ej6_b
+PROGRAM ej5_c
 
 use precision, pr => dp
 
 IMPLICIT NONE
 
 integer :: i, j, k, n
-real(pr) :: x, v, a, h, t0, tf, x0, v0, t, error
-real(pr) :: fx1, fx2, fv1, fv2
+real(pr) :: x, y, h, x0, xf, y0, error, exacta
+real(pr) :: f1, f2, f3, f4, start_time, finish_time
 
-open(unit=10, file='ej6_b.dat', status='UNKNOWN', action='WRITE')
+open(unit=10, file='ej5_c.dat', status='UNKNOWN', action='WRITE')
 
-write(10, *) "#  t   x   v   err"
+write(10, *) "#  x   y   exacta   err"
 
-t0 = 0._pr
-tf = 10._pr
+x0 = 0._pr
+xf = 1._pr
 
 !condiciones iniciales
-x0 = 1._pr
-v0 = 1._pr
-n = 1000000
+y0 = 1._pr
 
-h = (tf - t0)/real(n, pr)
+n = 100000
+h = (xf - x0)/real(n, pr)
 
 ! para t == 0
-v = v0
+y = y0
 x = x0
+call cpu_time(start_time)
 do i = 1, n
     ! integro en v
-    fv1 = h * f(x)
-    fv2 = h * f(x + fv1)
-    v = v + (fv1 + fv2) * 0.5_pr
-    ! integro en x
-    !fx1 = h * v
-    !fx2 = h * v
-    x = x + h * v  ! ya que f no depende de t
+    f1 = h * f(x, y)
+    f2 = h * f(x + h * 0.5_pr, y + f1*0.5_pr)
+    f3 = h * f(x + h * 0.5_pr, y + f2*0.5_pr)
+    f4 = h * f(x + h, y + f3)
+    y = y + (f1 + 2._pr * f2 + 2._pr * f3 + f4) / 6._pr
 
-    t = t0 + i * h
-    error = abs(x - sin(t) - cos(t))
-    write(10, *) t, x, v, error
+    exacta = exp(-x*x*0.5_pr)
+    error = abs(y - exacta)
+    write(10, *) x, y, exacta, error
+
+    x = x0 + h * i  ! ya que f no depende de t
 end do
+call cpu_time(finish_time)
+
 
 CONTAINS
-
-function f(x)
+function f(x, y)
 real (pr) :: f
-real (pr), intent(in) :: x
-integer(kind=8), parameter :: k = 1
+real (pr), intent(in) :: x, y
 
-    f = -k*x
+    f = -y*x
 
 end function f
 
-
-END PROGRAM ej6_b
+END PROGRAM ej5_c

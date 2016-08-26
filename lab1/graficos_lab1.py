@@ -53,6 +53,37 @@ plt.savefig('ej_3.eps')
 plt.close()
 
 # =============================================================================
+# ejercicio 5
+# =============================================================================
+t = ascii.read('ej5_a.dat')
+plt.plot(t['x'], t['y'], label='posicion')
+plt.plot(t['x'], t['exacta'], 'r--',label='sol. exacta')
+plt.legend(loc='best')
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.savefig('ej5_a.eps')
+plt.close()
+
+t = ascii.read('ej5_b.dat')
+plt.plot(t['x'], t['y'], label='posicion')
+plt.plot(t['x'], t['exacta'], 'r--',label='sol. exacta')
+plt.legend(loc='best')
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.savefig('ej5_b.eps')
+plt.close()
+
+t = ascii.read('ej5_c.dat')
+plt.plot(t['x'], t['y'], label='posicion')
+plt.plot(t['x'], t['exacta'], 'r--',label='sol. exacta')
+plt.legend(loc='best')
+plt.xlabel(r'$x$')
+plt.ylabel(r'$y$')
+plt.savefig('ej5_c.eps')
+plt.close()
+
+
+# =============================================================================
 # ejercicio 6
 # =============================================================================
 t = ascii.read('ej6_a.dat')
@@ -75,6 +106,15 @@ plt.ylabel(r'$x$')
 plt.savefig('ej6_b.eps')
 plt.close()
 
+t = ascii.read('ej6_c.dat')
+plt.plot(t['t'], t['x'], label='posicion')
+plt.plot(t['t'], np.sin(t['t']) + np.cos(t['t']), 'r--',label='sol. exacta')
+plt.plot(t['t'], t['v'], label='velocidad')
+plt.legend(loc='best')
+plt.xlabel(r'$t$')
+plt.ylabel(r'$x$')
+plt.savefig('ej6_c.eps')
+plt.close()
 
 
 # =============================================================================
