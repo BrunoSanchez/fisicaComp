@@ -29,3 +29,6 @@
 *.app
 *.eps
 *.dat
+
+# Documents
+*.pdf
