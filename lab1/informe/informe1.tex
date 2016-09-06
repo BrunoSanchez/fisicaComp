@@ -1,0 +1,46 @@
+\documentclass[a4paper,10pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+
+% Title Page
+\title{Informe F\'isica Computacional }
+\author{Bruno Sanchez}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Se presentan los enunciados, soluciones y discusion de resultados del primer trabajo practico
+de la materia de fisica Computacional.
+\end{abstract}
+
+\section{Ejercicio 1}
+
+\section{Ejercicio 2}
+
+\subsection{Enunciado}
+Sea una funci\'on $F(x) = e^x$. Evaluar $F'(x=1)$ mediante la formula centrada de dos puntos 
+ \begin{displaymath}
+ f'(x) = \frac{f(x+h) - f(x-h)}{2h} + O(h^2)
+ \end{displaymath} 
+ para distintos valores de $h$ y calcule el incremento \'optimo teniendo en cuenta los errores de truncamiento y redondeo. 
+ Grafique el error (usando el valor exacto de la derivada) versus $h$ (elija $h=10^{-k}$, con $k$ entero y grafique usando
+ escala $log-log$.
+ 
+\subsection{Soluci\'on}
+Como primer paso se calculo la derivada de la funcion $F$, la cual es $F'(x)=e^x$, la cual evaluada en $x=1$ entrega un
+valor de $e$. 
+
+Luego se escribi\'o un programa en Fortran 90, para calcular la f\'ormula centrada de dos puntos:
+\inputminted[firstline=22]{fortran}{../2/lab1_2.f90}
+
+
+\end{document}          
