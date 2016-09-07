@@ -32,3 +32,8 @@
 
 # Documents
 *.pdf
+
+# Graphics
+*.png
+*.eps
+*.ps
