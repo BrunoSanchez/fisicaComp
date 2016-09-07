@@ -23,6 +23,7 @@
 PROGRAM lab1_7
 
 use precision, pr => dp
+!include "/usr/include/fftw3.f"
 
 IMPLICIT NONE
 
@@ -34,7 +35,7 @@ integer, parameter :: n=1024
 real(pr) :: start_time, finish_time
 real(pr) :: pi, ti, tf, L, factor, fre, fim
 real(pr), dimension(n) :: f, t
-complex(pr) dimension(n/2 + 1) :: f_hat
+complex(pr), dimension(n/2 + 1) :: f_hat
 
 open(unit=10, file='f_t_ej7.dat', status='UNKNOWN', action='WRITE')
 open(unit=16, file='fft_ej7.dat', status='UNKNOWN', action='WRITE')
@@ -63,9 +64,9 @@ call cpu_time(finish_time)
 
 
 !write(16,*) '#   freq     f_hat'
-factor = 1._pr/L
+factor = 1024._pr / L
 
-do i = -n/2, n/2 - 1
+do i = -n/2, n/2, 1
     if (i < 0) then
         fre = real(conjg(f_hat(-i+1) )/real(n, pr))
         fim = imag(conjg(f_hat(-i+1) )/real(n, pr))
