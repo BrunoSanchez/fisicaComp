@@ -1,8 +1,18 @@
-\documentclass[a4paper,10pt]{report}
+\documentclass[a4paper,10pt]{paper}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{minted}
 \usepackage{color}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -15,34 +25,355 @@
 
 
 \begin{document}
+
 \maketitle
 
 \begin{abstract}
-Se presentan los enunciados, soluciones y discusion de resultados del primer trabajo practico
-de la materia de fisica Computacional.
+Se presentan los enunciados, soluciones y discusiones de resultados del primer trabajo pr\'actico
+de la materia de F\'{i}sica Computacional 2016.
 \end{abstract}
 
-\section{Ejercicio 1}
-
 \section{Ejercicio 2}
-
 \subsection{Enunciado}
 Sea una funci\'on $F(x) = e^x$. Evaluar $F'(x=1)$ mediante la formula centrada de dos puntos 
  \begin{displaymath}
  f'(x) = \frac{f(x+h) - f(x-h)}{2h} + O(h^2)
  \end{displaymath} 
- para distintos valores de $h$ y calcule el incremento \'optimo teniendo en cuenta los errores de truncamiento y redondeo. 
- Grafique el error (usando el valor exacto de la derivada) versus $h$ (elija $h=10^{-k}$, con $k$ entero y grafique usando
- escala $log-log$.
+ para distintos valores de $h$ y calcule el incremento \'optimo teniendo en cuenta los errores 
+ de truncamiento y redondeo. 
+ Grafique el error (usando el valor exacto de la derivada) versus $h$ (elija $h=10^{-k}$, 
+ con $k$ entero y grafique usando escala $log-log$.
  
 \subsection{Soluci\'on}
-Como primer paso se calculo la derivada de la funcion $F$, la cual es $F'(x)=e^x$, la cual evaluada en $x=1$ entrega un
-valor de $e$. 
+Como primer paso se calculo la derivada de la funcion $F$, la cual es $F'(x)=e^x$, 
+la cual evaluada en $x=1$ entrega un valor de $e$. 
 
 Luego se escribi\'o un programa en Fortran 90, para calcular la f\'ormula centrada de dos puntos:
 \inputminted[firstline=22]{fortran}{../2/lab1_2.f90}
 
+\subsection{Discusi\'on}
+En la figura \ref{fig:ej2} se muestra un gr\'afico del error en relaci\'on al tama\~no del paso $h$. Se observa como esto
+es una funci\'on decreciente hasta cierto $h$ donde vuelve a crecer. Esto es debido a la precisi\'on de la 
+m\'aquina, la cual al efectuar restas entre valores cercanos comete imprecisiones de redondeo cada vez mayores.
+Esto sucede dentro del argumento de la funci\'on $f$, donde al sumar y restar $x+h$ y $x-h$, con un $h$ tan peque\~no, 
+provocan que ambas evaluaciones de $f$ sean iguales a \'orden de precisi\'on de m\'aquina. Con esto, la resta del numerador
+del cociente incremental posee un error de redondeo que puede ser cercano al 100\textdiscount.
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth]{../graficos/ej_2.png}
+ % ej_2.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Error vs tama\~no de paso $h$}
+ \label{fig:ej2}
+\end{figure}
+
+
 \section{Ejercicio 8: Sistemas Ca\'oticos}
-\subsection{Enunciado}
+Para el ejercicio 8, se debe considerar el siguiente mapeo log\'{i}stico:
+\begin{displaymath}
+ x_{t+1} = r x_t (1 - x_t)
+\end{displaymath}
+para $k \in N$.
+\subsection{Apartado a}
+\subsubsection{Enunciado}
+Se solicita graficar las trayectorias para $x_t$ vs. $t$, para $r = 1.5; 3.3; 3.5; 3.55; 4$. 
+Es necesario realizar 500 pasos para diferentes condiciones iniciales $x_0 = 0.06; 0.3; 0.6; 0.9$, 
+y graficar las mismas.
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, que resolvia el calculo num\'erico del ejercicio:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../8/ej8a.f90}
+\subsubsection{Discusi\'on}
+El gr\'afico de la trayectoria para $r = 1.5$ se puede apreciar en la figura \ref{fig:ej8a_r_150}, 
+y donde es facilmente observable una convergencia en pocos pasos a un valor estable.
+Para los valores superiores de $r$, este comportamiento no se observa.
+Los gr\'aficos de las figuras \ref{fig:ej8a_r_330}, \ref{fig:ej8a_r_350}, y \ref{fig:ej8a_r_355} muestran comportamiento
+oscilatorio para $t$ mayores que un cierto valor; y ninguna progresi\'on converge a un valor estacionario, sino que 
+los mapeos muestran un grupo finito de valores posibles para $x_t$, entre los cuales va oscilando.
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8a_r_150.png}
+ % ej8a_r_1.50.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Trayectorias para diferentes condiciones iniciales, con $r=1.5$ y $t<20$}
+ \label{fig:ej8a_r_150}
+\end{figure}
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8a_r_330.png}
+ % ej8a_r_330.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Trayectorias para $r=3.3$ con $t<30$}
+ \label{fig:ej8a_r_330}
+\end{figure}
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8a_r_350.png}
+ % ej8a_r_330.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Trayectorias para $r=3.5$ con $t<30$}
+ \label{fig:ej8a_r_350}
+\end{figure}
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8a_r_355.png}
+ % ej8a_r_330.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Trayectorias para $r=3.55$ con $t<30$}
+ \label{fig:ej8a_r_355}
+\end{figure}
+
+Para un valor de $r=4.0$ el comportamiento del mapeo $x_t$ es totalmente diferente a los anteriormente
+descriptos. Desde valores de $t$ bajos, la serie de puntos $x_t$ es en apariencia impredecible --aunque
+esto no quiere decir que no podamos acotar la progresi\'on-- y posee valores de $x_t \in (0, 1)$.
+El gr\'afico de la figura  \ref{fig:ej8a_r_400} muestra, tan s\'olo para los 50 primeros valores de $t$, 
+la trayectoria de $x_t$, donde es evidente que no es esperable una convergencia similar a las vistas anteriormente.
+Adem\'as este comportamiento no cambia para valores mayores de $t$, al menos hasta $t=500$ donde se calcularon
+las trayectorias.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8a_r_400.png}
+ % ej8a_r_330.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Trayectorias para $r=4$ con $t<50$}
+ \label{fig:ej8a_r_400}
+\end{figure}
+
+\subsection{Apartado b}
+\subsubsection{Enunciado}
+Se solicita calcular el espectro de potencia para los valores de $r$ anteriormente mencionados, mediante 
+la transformada de Fourier FFT. Como dato adicional se sabe que es necesario descartar los primeros 300 
+pasos, y que se debe utilizar tan solo la condici\'on inicial $x_0 = 0.6$ 
+
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, que resolvia el calculo num\'erico del ejercicio:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../8/ej8b.f90}
+
+\subsubsection{Discusi\'on}
+Para este ejercicio fue necesario utilizar la librer\'{i}a de FFTW, para eso se requiere una primera
+instancia de planeamiento de la transformada (l\'{i}nea 35), y luego de guardar los valores a transformar
+(l\'{i}nea 36) se llama a la subrutina de trasformada (l\'{i}nea 37). Como la transformada de Fourier de una
+serie real cumple con $\hat{f}(-k) = \hat{f}(k)^*$, y al tomar la parte real se vuelve una funci\'on par, 
+el bucle de las l\'{i}neas 46-58 se encarga de guardar la parte correspondiente a las frecuencias menores que $0$.
+
+En la figura \ref{fig:ej8b} se muestran los cuatro espectros de potencia calculados para cada valor de $r$.
+Notar que se aplic\'o una normalizaci\'on de forma tal que sus valores m\'aximos sean iguales a la unidad, y de 
+esta forma poder realizar un an\'alisis comparativo de la importancia relativa de las frecuencias para cada valor
+de $r$. 
+
+Es posible apreciar la r\'apida convergencia de la serie correspondiente a $r=1.3$, ya que no presenta 
+se\~nal alguna en el rango de frecuencia muestreado. Esto es bastante razonable, ya que vimos que los 
+valores de $x_t$ crecen y suavemente se estacionan en un valor sin oscilar.
+
+Esto es muy distinto si observamos los espectros correspondientes a $r=3.3$, $r=3.5$ y $r=3.55$, donde hay
+se\~nal en dos bandas de frecuencia, mostrando picos prominentes en frecuencias intermedias. Esto es la contracara
+de las oscilaciones previamente discutidas, donde vimos que los valores de $x_t$ posibles --para un $t$ mayor que
+un cierto valor-- son pocos y se repiten peri\'odicamente. 
+
+Nos reservamos el espectro de $r=4.$ para el final, donde se ve se\~nal en varias bandas del espectro, y con un pico 
+dominante en las cercanias al valor de $f=45$, mostrando una cuasi-periodicidad. Esto quiere decir que si bien, 
+el comportamiento de la serie $x_t$ es impredecible, es altamente probable que los valores posibles de $x_t$ sean 
+pertenecientes a un conjunto finito, dadas las condiciones iniciales y para un $r$ fijo.
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/ej8b.png}
+ % ej8b.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+  \caption{Espectros de potencia para distintos valores de $r$, con condici\'on inicial $x_0 = 0.6$ donde se han omitido
+  los primeros 300 pasos ($t>300$). Los espectros de potencia estan normalizados de forma tal que su m\'aximo valor sea igual a uno.}
+ \label{fig:ej8b}
+\end{figure}
+
+\subsection{Apartado c}
+\subsubsection{Enunciado}
+Se pide graficar un histograma normalizado de la distribuci\'on de $x_t$ para $r=4$ y $x_0=0.6$. Adem\'as se pide descartar los primeros
+300 pasos, y utilizar hasta el valor de $x_{10000}$.
+
+\subsubsection{Discusi\'on}
+En la figura \ref{fig:8c} se puede ver el gr\'afico del histograma solicitado. Si bien los bines son en total 16, se puede observar claramente
+que los valores permitidos de $x_t$ estan acotados al intervalo $(0, 1)$ y que los valores extremos --cercanos a cero y a la unidad-- son
+m\'as frecuentes en la serie. Esto apoya nuestra conclusi\'on del apartado anterior, donde se ve que el espectro de Fourier, poseia 
+una frecuencia m\'as intensa, mostrando una cuasi-periodicidad.
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.5\textwidth,keepaspectratio=true]{../graficos/ej8c.png}
+ % ej8c.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Histograma de $x_t$}
+ \label{fig:8c}
+\end{figure}
+
+\subsection{Apartado d}
+\subsubsection{Enunciado}
+Se pide obtener el llamado ``diagrama de \'orbitas'', en el plano $x$, $r$. Es necesario para esto realizar el calculo de los valores de 
+$x_t$ para $3.4 < r < 4.$, utilizando adem\'as los valores correspondientes a $300 < t < 600$. Adem\'as se solicit\'o un c\'alculo extra, para
+obtener un gr\'afico de la regi\'on ampliada correspondiente a $0.13 < x < 0.185$ y $3.847 < r < 3.856$.
+
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, que resolvia el calculo num\'erico del ejercicio para las \'orbitas:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../8/ej8d.f90}
+
+Adem\'as se utiliz\'o para la ampliaci\'on el mismo c\'odigo, con modificaciones en las l\'{i}neas 15 y 16, donde
+se definen los valores m\'aximos y m\'{i}nimos de $r$ permitidos para construir el diagrama de \'orbitas.
+
+\subsubsection{Discusi\'on}
+En la figura \ref{fig:8d_1} se pueden apreciar las \'orbitas para diferentes valores de $r$, 
+y es f\'acil distinguir las bifurcaciones que se producen en las mismas para $r$ cada vez mayores.
+
+Estas bifurcaciones llevan al sistema --en una llamada ``transcici\'on al caos''-- de manera paulatina
+a una regi\'on del diagrama en el que $x_t$ se vuelve impredecible.
+
+En la figura \ref{fig:8d_2} se aprecia la ampliaci\'on sobre la regi\'on dada en el enunciado, 
+y se puede observar una estructura similar a la hallada para el diagrama de la figura \ref{fig:8d_1}, 
+aunque no es totalmente id\'entica. Esto refleja lo charlado en clase, sobre la \textit{dimensi\'on fractal}
+del diagrama de \'orbitas.
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.9\textwidth,keepaspectratio=true]{../graficos/ej8d_1.png}
+ % ej8d_1.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{\'Orbitas para $3.4 < r < 4.$.}
+ \label{fig:8d_1}
+\end{figure}
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.9\textwidth,keepaspectratio=true]{../graficos/ej8d_2.png}
+ % ej8d_1.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{\'Orbitas para $3.847 < r < 3.856$ y $0.13 < x_t < 0.185$.}
+ \label{fig:8d_2}
+\end{figure}
+
+\subsection{Apartado e}
+\subsubsection{Enunciado}
+Se pide obtener el exponente de Lyapunov, para $2<r<4$.
+
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, para el c\'alculo solicitado:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../8/ej8e.f90}
+
+\subsubsection{Discusi\'on}
+En la figura \ref{fig:ej8e} se muestran los valores de Exponente de Lyapunov obtenidos.
+Si bien se solicitaba recorrer los valores de $r$ entre $2$ y $4$, unicamente se pudieron calcular los 
+exponentes para $3.55 < r < 4.$.
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/ej8e.png}
+ % ej8e.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Exponente de Lyapunov}
+ \label{fig:ej8e}
+\end{figure}
+
+\section{Ejercicio 9: Oscilador de Pullen-Edmonds}
+Para el ejercicio 9, se debe considerar el siguiente Hamiltoniano:
+\begin{displaymath}
+ H = \frac{1}{2}(p_1^2 + p_2^2) + \frac{1}{2}(q_1^2 + q_2^2) + \alpha q_1^2 q_2^2
+\end{displaymath}
+con $\alpha$ pertenecientes a los reales y los valores de masa $m$ y frecuencia angular
+$\omega$ sean iguales a 1.
+
+
+\subsection{Apartado a}
+\subsubsection{Enunciado}
+Se solicita integrar num\'ericamente las ecuaciones de movimiento utilizando un algoritmo
+de Runge-Kutta de orden 4. El valor de $\alpha$ debe ser de $0.05$, y se deben elegir valores de energ\'{i}a 
+$E = 5, 20, 100$. 
+Se pide graficar valores de las coordenadas y momentos generalizados, con respecto al tiempo.
+Las condiciones iniciales deben ser tales que $q_1 = 2$, $p_1 = 0$, $q_2=0$, $p_2=\sqrt{2E-4}$.
+
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, que resolvia el calculo num\'erico del ejercicio:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../9/ej9a.f90}
+En la l\'{i}nea 14 se establece el valor de la energ\'{i}a del sistema, y en la siguiente
+las condiciones iniciales.
+El valor \'optimo de $h$ es aproximadamente $10^{-3}$, por lo que esta declarado como un par\'ametro.
+Se utiliz\'o la funci\'on $f$ declarada en las l\'{i}neas 41-51 para poder calcular la integraci\'on de Runge-Kutta.
+Esta funci\'on provino de linealizar el sistema mediante las ecuaciones de movimiento:
+\begin{displaymath}
+ \frac{\partial q_i}{\partial t} = \frac{\partial H}{\partial p_i} 
+\end{displaymath}
+\begin{displaymath}
+ \frac{\partial p_i}{\partial t} = - \frac{\partial H}{\partial q_i}
+\end{displaymath}
+
+Lo cual entrega para nuestro Hamiltoniano:
+\begin{align*}
+ \dot{q_1} &= p_1  &   \dot{p_1} &= -q_1 -\alpha q_1 q_2^2 \\
+ \dot{q_2} &= p_2  &   \dot{p_2} &= -q_2 -\alpha q_2 q_1^2
+\end{align*}
+Dando entonces la forma de la funci\'on $f$.
+
+\subsubsection{Discusi\'on}
+En la figura \ref{fig:9pq} se pueden apreciar los valores de las coordenadas y momentos generalizados en funci\'on
+del tiempo para los valores de $0 < t < 200$. En este gr\'afico se desplazaron los valores reales de los osciladores
+de energ\'ias $20$ y $100$ para poder apreciar mejor la evoluci\'on temporal de cada integraci\'on.
+
+Es notable como el oscilador de alta energ\'{i}a posee frecuencias arm\'onicas que lo perturban del caso de energ\'{i}as
+relativamente bajas.
+
+\begin{figure}[!h]
+ \centering
+ \includegraphics[width=0.9\textwidth,keepaspectratio=true]{../graficos/ej9a_pq.png}
+ % ej9a_pq.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Coordenadas y momentos generalizados en funcion del tiempo. 
+ Notar el desplazamiento artificial agregado para diferentes energ\'{i}as, 
+ ya que en realidad cada oscilador oscila en el punto de equilibrio $(q_1, q_2)= (0, 0)$. 
+ Esto ha sido agregado para poder distinguir las trayectorias de cada una de las fases.}
+ \label{fig:9pq}
+\end{figure}
+
+\subsection{Apartado a}
+\subsubsection{Enunciado}
+Se solicita trazar las secciones de Poincar\'e en el plano $q_1$, $p_1$ para los valores de energ\'{i}a dados en el punto 
+anterior. Las condiciones del plano son: $q_2 = 0$ y $p_2 > 0$. 
+
+\subsubsection{Soluci\'on}
+Se program\'o el c\'odigo num\'erico a continuaci\'on:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../9/ej9b.f90}
+
+El cual es basicamente el mismo c\'odigo que en el apartado anterior, con la \'unica diferencia de 
+las l\'{i}neas 23-28 donde se barre para $11\times 11 = 121$ condiciones iniciales diferentes.
+
+\subsubsection{Discusi\'on}
+En la figura \ref{fig:ej9b5} se aprecia el diagrama de secci\'on de Poincar\'e para la energ\'{i}a m\'as baja, 
+mostrando la presencia de tres centros (sobre el eje de $q_1 = 0$ alrededor de los cuales las soluciones oscilan.
+Esto quiere decir que las soluciones ser\'an peri\'odicas al menos en este plano del espacio de las fases.
+
+Es f\'acil notar que los centros corresponden a puntos donde las soluciones ser\'{i}an est\'aticas, aunque 
+no es posible tan s\'olo con estos diagramas, analizar si esos puntos son de equilibrio inestable o estable.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/ej9b_e5.png}
+ % ej9b_e5.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Secci\'on de Poincar\'e de $q_1$, $p_1$para $E=5$}
+ \label{fig:ej9b5}
+\end{figure}
+
+En la figura \ref{fig:ej9b20} se puede observar el diagrama de secci\'on de Poincar\'e, pero para una 
+energ\'{i}a mayor ($E=20$). En este caso, se pueden ver zonas donde las separatrices de los tres centros estables
+se cruzan --en $(q, p) = (0, \pm 4)$ --. En estas regiones el comportamiento no esta claro, aunque es posible
+decir que no conforman centros atractores. Por otro lado existen regiones de clara periodicidad, una vez m\'as, cerca
+de los centros sobre el eje $q_2 = 0$.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/ej9b_e20.png}
+ % ej9b_e5.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Secci\'on de Poincar\'e de $q_1$, $p_1$para $E=20$}
+ \label{fig:ej9b20}
+\end{figure}
+
+En la figura \ref{fig:ej9b100} se muestra el diagrama correspondiente a $E=100$. Se puede apreciar muy poca estructura, 
+lo que nos dice que el comportamiento de este oscilador es un comportamiento aperi\'odico --al menos en los intervalos de 
+tiempo que estamos integrando-- ya que es dificil asegurar que haya una concentraci\'on de puntos en el diagrama.
+Esto quiere decirnos que en este corte del espacio de las fases, el oscilador no vuelve a retornar sobre configuraciones
+antes visitadas (digamos combinaciones de $q_1$ y $p_1$), y que por lo tanto se mueve por toda la regi\'on de este espacio
+que le son permitidas --existen restricciones debido a la energ\'{i}a del sistema.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/ej9b_e100.png}
+ % ej9b_e5.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Secci\'on de Poincar\'e de $q_1$, $p_1$para $E=100$}
+ \label{fig:ej9b100}
+\end{figure}
+
+
 
 \end{document}          

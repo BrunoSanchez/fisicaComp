@@ -13,23 +13,23 @@
 ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ! GNU General Public License for more details.
 !
-program orbitmap
+program orbitmap2
 
 use precision, pr => dp
 
 implicit none
-integer, parameter      :: N = 1500, K = 2500
+integer, parameter      :: N = 2000, K = 2500
 integer                 :: i, j, t
 real(pr)                :: xt, xt_1, x0, r_0, r_f, r, dr
 character(len=4)        :: rj
 
 
-open(unit=10, file='ej8d.dat', status='UNKNOWN', action='WRITE')
+open(unit=10, file='ej8d_2.dat', status='UNKNOWN', action='WRITE')
 write(10, *) "#  t   xt   r"
 
-r_0 = 1.5_pr
-r_f = 4.0_pr
-dr = (r_f - r_0)/K
+r_0 = 3.847_pr
+r_f = 3.856_pr
+dr = (r_f - r_0)/real(K, pr)
 x0 = 0.6_pr
 
 do j = 1, K
@@ -38,14 +38,14 @@ do j = 1, K
     xt_1 = x0
     !write(10, *) t + i, x0, r
     do i = 1, N
-            xt = r * xt_1 * (1._pr - xt_1)
-            if (i > 300) then
-                write(10, *) t + i, xt, r
-            end if
-            xt_1 = xt
+        xt = r * xt_1 * (1._pr - xt_1)
+        if (i > 300) then
+            write(10, *) t + i, xt, r
+        end if
+        xt_1 = xt
     end do
 
 end do
 
 close(10)
-end program orbitmap
+end program orbitmap2

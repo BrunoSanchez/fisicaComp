@@ -21,20 +21,21 @@
 !
 !
 PROGRAM eps
+use precision, pr => dp
 IMPLICIT NONE
 
 INTEGER :: i, j, k
-REAL(KIND=8) :: d, x, x_p
+REAL(pr) :: d, x, x_p
 
-x = 1.d0
-d = 0.5
+x = 1._pr
+d = 2._pr
 
-do i = 1, 40
+do i = 1, 2000
     x_p = x + d
-    if (x_p.eq.x) exit
-    d = d/2.d0
+    if (x_p == x) exit
+    d = d/2._pr
 end do
 
-print *, d
+print *, i, d, epsilon(1._pr)
 
 END PROGRAM eps
