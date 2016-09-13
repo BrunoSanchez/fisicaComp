@@ -37,3 +37,9 @@
 *.png
 *.eps
 *.ps
+*.dvi
+*.aux
+*.backup
+*.log
+fisicaComp_lab1.geany
+*.x
