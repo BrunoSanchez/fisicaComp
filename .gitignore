@@ -41,5 +41,10 @@
 *.aux
 *.backup
 *.log
-fisicaComp_lab1.geany
 *.x
+
+# Geany project files
+fisicaComp_lab1.geany
+
+# Selected files
+*prec_mod.f90*
