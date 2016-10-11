@@ -14,12 +14,38 @@
 ! GNU General Public License for more details.
 !
 program integralMC
-
 use precision, pr => dp
-use mzranmod
+use mtmod
 
 implicit none
-integer :: i, j, k
-integer, parameter          :: n=3
+integer                     :: i, j, k
+real(pr)                    :: x, Imc, exact, error, cum
+
+
+open(unit=10, file='ej3a.dat', status='UNKNOWN', action='WRITE')
+write(10, *) "#   n   Imc  err   "
+
+exact=0.25
+cum = 0
+do i = 1, 100000
+    x = grnd()
+    cum = cum + f(x)
+    if (mod(i, 10)==0) then
+        Imc = cum/real(i, pr)
+        error = abs(exact - Imc)
+        write(10, *) i, Imc, error
+    end if
+end do
+
+
+
+contains
+
+function f(x)
+implicit none
+real(pr)                    :: f, x
+
+f = x**3.
+end function f
 
 end program

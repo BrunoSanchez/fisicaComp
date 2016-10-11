@@ -1,0 +1,174 @@
+\documentclass[a4paper,10pt]{paper}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+
+% Title Page
+\title{Informe F\'isica Computacional III}
+\author{Bruno Sanchez}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Se presentan los enunciados, soluciones y discusiones de resultados del tercer trabajo pr\'actico
+de la materia de F\'{i}sica Computacional 2016.
+\end{abstract}
+
+
+\section{Ejercicio 2: Caminatas al azar}
+\subsection{Enunciado}
+ En una red cuadrada bidimiensional implementar un algoritmo de caminatas al azar de $n$ pasos. Iniciar la
+ caminata en el sitio central de la red $R(0) = (0,0)$.
+ \begin{enumerate}
+  \item Hallar el desplazamiento cuadr\'atico medio 
+  $\langle(R(n) - R(0))^2\rangle$ en funci\'on del n\'umero
+  de pasos $n$, promediando sobre $N=10^6$ caminatas. 
+  Chequear que se cumpla la ley $\langle R^2\rangle\sim n$.
+  \item Subdividr la red en cuadrantes y contabilizar la cantidad de veces que el caminante termina
+  en un dado cuadrante, comparando con el valor esperado $N/4$. Graficar estos resultados en funci\'on
+  de $n$, comparando los resultados de distintos generadores. 
+  Utilizar los generadores \textbf{ran2}, \textbf{MZRAN} y el llamado ``Mersenne Twister''.
+  \item Realizar el mismo ejercicio que en el primero, pero para una part\'icula real en 3-D.
+ \end{enumerate}
+
+\subsection{Soluci\'on}
+ Para la resoluci\'on del problema se escribi\'o un programa en Fortran 90: 
+ \inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../ej2ab.f90}
+ 
+ En la l\'inea 31 el programa sortea n\'umeros \textit{random} entre los valores $(0, 1)$.
+ Y la funci\'on \texttt{step} se utiliza este mismo valor \textit{random}, para decidir que direcci\'on
+ de movimiento tomar\'a la caminata. En particular la funci\'on \texttt{step} discretiza el paso, de
+ forma tal que el caminante da un paso de largo 1 hacia arriba, abajo, izquierda o derecha.
+ 
+ En la l\'inea 35 se acumulan los valores de $\Delta R^2$ para el c\'alculo de $\langle R^2\rangle$.
+ Y en la l\'inea posterior (36) se llama a la \texttt{subroutine quadrant}, que acumula el conteo sobre los
+ cuadrantes.
+
+\subsection{Discusi\'on}
+En la figura \ref{fig:ej2} se muestra un gr\'afico del error en relaci\'on a la cantidad de
+pasos $n$. Se corrobora el comportamiento lineal del desplazamiento medio para cualquiera de los
+tres generadores \textit{random} utilizados. Para poder realizar una comparaci\'on, se adicion\'o
+un valor de 10 y 20 a los valores calculados utilizando dos de los generadores.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth]{../graficos/rms_vs_n.png}
+ % ej_2.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Error vs cantidad de pasos $n$}
+ \label{fig:ej2}
+\end{figure}
+
+En las figuras \ref{fig:ej2quadsranmod}, \ref{fig:ej2quadsmzran} y \ref{fig:ej2quadsmstw} se 
+muestran gr\'aficos los contadores del cuadrante final de las caminatas para los generadores
+\texttt{ran2}, \texttt{mzran} y \texttt{mersenne twister} respectivamente.
+En los paneles inferiores de las figuras se muestra la cantidad de veces que la caminata termina
+en el origen en funci\'on del n\'umero de pasos; demostrando claramente que la probabilidad
+de que esto ocurra es distinta de cero. 
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/quads_vs_nranmod.png}
+ % quads_hist_ranmod.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Contadores de cuadrantes para el generador \texttt{ran2}.}
+ \label{fig:ej2quadsranmod}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/quads_vs_n_mzran.png}
+ % quads_hist_ranmod.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Contadores de cuadrantes para el generador \texttt{mzran}}
+ \label{fig:ej2quadsmzran}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/quads_vs_n_mstw.png}
+ % quads_hist_ranmod.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Contadores de cuadrantes para el generador \texttt{mersennetwister}}
+ \label{fig:ej2quadsmstw}
+\end{figure}
+
+
+\section{Ejercicio 3: Integraci\'on por Monte Carlo}
+Para este ejercicio es necesario aplicar el M\'etodo de Monte Carlo para integraci\'on.
+
+\subsubsection{Enunciado}
+\begin{enumerate}
+ \item Escribir un programa  que  estime  la  integral  de  la  funci\'on $f(x)  =x^n$ en  el intervalo 
+ $[0;1]$ usando el m\'etodo de Monte Carlo. Para el caso $n= 3$, 
+ estime la integral usando $N=10\times i$; $i= 1, 2, 3 \ldots $
+evaluaciones de la func\'on. Calcule la diferencia entre el valor exacto de integral, 
+$I= 1=(n+ 1)$, y el obtenido usando el m\'etodo de Monte Carlo, 
+y grafique que el valor absoluto de \'esta en funci\'on de $N$. 
+  \item Modificar el programa anterior para calcular la misma integral, pero ahora utilizando
+  \textit{importance sampling}, con la distribuci\'on de probabilidad $p(x) = (k+1) x^k$, con $k<n$. 
+  Recordar el m\'etodo de la transformada inversa para obtener n\'umeros aleatorios con distribuci\'on
+  no uniforme.
+\end{enumerate}
+ 
+\subsubsection{Soluci\'on}
+Se program\'o el siguiente c\'odigo, que resolvia el calculo num\'erico del ejercicio, para el primer
+apartado:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../ej3a.f90}
+
+Para el siguiente apartado se program\'o el c\'odigo a continuaci\'on:
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../ej3b.f90}
+
+
+\subsubsection{Discusi\'on}
+Para el ejercicio se utiliz\'o el generador de n\'umeros \textit{random} \texttt{Mersenne twister}, 
+y el llamado \texttt{ran2} (en el segundo apartado).
+En el primer caso, se utiliza una estimaci\'on del valor de la integral mediante un Monte Carlo 
+cl\'asico. En el segundo apartado se puede observar la presencia de ambas funciones \texttt{p(x, k)} y 
+\texttt{phi\_inv(x, k)} las cuales son las funciones densidad de probabilidad y inversa de funci\'on 
+acumulada de probabilidad, respectivamente.
+El m\'etodo para sortear n\'umeros random con distribuci\'on no uniforme es el de la transformada inversa:
+se utiliza una transformaci\'on del intervalo $(0,1)$ mediante la funci\'on inversa de la distribuci\'on 
+acumulada de probabilidad.
+\begin{displaymath}
+ \phi(X) = p(X>x) = \int_{-\infty}^{X}p(x)dx
+\end{displaymath}
+Luego se realiza la inversi\'on de esta funci\'on, y se eval\'ua en el n\'umero aleatorio $r$
+\begin{displaymath}
+ y = \phi^{-1}(r)
+\end{displaymath}
+
+Para nuestro caso, la inversa $\phi^{-1}$ es tal que $y = x^{\frac{1}{k+1}}$, y $k=2$ y $k=3$.
+
+En la figura \ref{fig:ej3ab} se muestra el gr\'afico del error en funci\'on del n\'umero de sorteos
+de Monte Carlo utilizados.
+Es notable que con el \textit{importance sampling} el c\'alculo mejora notablemente para $k=2$, y 
+excepcionalmente para $k=3$, ya que no tiene error a precisi\'on de m\'aquina.
+Esto se debe que la distribuci\'on de probabilidad es una constante por la funci\'on a integrar.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\textwidth]{../graficos/errorMC.png}
+ % errorMC.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Gr\'afico de error en funci\'on del n\'umero de sorteos aleatorios usados para estimar la 
+ integral.}
+ \label{fig:ej3ab}
+\end{figure}
+
+
+\end{document}          

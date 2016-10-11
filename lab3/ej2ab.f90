@@ -25,7 +25,7 @@ implicit none
 integer             :: i, j, k, quad(100,5)
 integer, parameter  :: Nc=1e6
 integer             :: x(2), idum1=-130103
-real(dp)            :: r, r2(100)
+real(pr)            :: r, r2(100)
 
 
 open(unit=10, file='ej2ab_mstw.dat', status='UNKNOWN', action='WRITE')
