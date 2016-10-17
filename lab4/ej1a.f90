@@ -42,6 +42,7 @@ s = (/ (1, i=0, (L*L) - 1) /)
 ! energia del estado fundamental, en unidades de J
 e = -2._pr * real(L*L, pr)
 
+! correlaciones
 corr_e = (/ (0, i=1, u_max) /)
 corr_m = (/ (0, i=1, u_max) /)
 
@@ -82,6 +83,8 @@ do tmc =1, 100000
     end do
 
     if (tmc > 1000) then  ! descarto transitorio
+        ! actualizo e_c, m_c y calculo correlaciones corr_m,e
+
         if (mod(tmc, 100)==0) then
             m = sum(s)/real(L*L, pr)
             e_w = e/real(L*L, pr)
