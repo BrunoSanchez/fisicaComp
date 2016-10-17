@@ -20,7 +20,7 @@ use mtmod
 
 implicit none
 integer                     :: i, j, k
-integer, parameter          :: L=40, u_max=100
+integer, parameter          :: L=120, u_max=200
 integer                     :: s(0:(L*L)-1), tmc
 integer                     :: n_down, n_up, n_left, n_right, spinadd, loc
 ! real(dp), parameter       :: k_b=1.3806488e-23
@@ -32,7 +32,7 @@ real(pr)                    :: prob(-4:4, -1:1)
 36 format(F6.4, 4X, F8.4, 4X, F6.4, 4X, F6.4, 4X)
 38 format(F6.4, 4X, F6.4, 4X, I8)
 
-open(unit=10, file='L_40-T_1_01.dat', status='unknown')
+open(unit=10, file='L_120-T_1_01.dat', status='unknown')
 write(10, *) "#m    e    m2    e2    "
 
 ! Inicializo la red de spines.
@@ -60,7 +60,7 @@ end do
 
 ! dar vuelta la red por completo una vez
 ! de forma ordenada
-do tmc =1, 100000
+do tmc =1, 1000000
     do k = 0, (L * L) -1
         i = mod(k, L)
         j = int(k/L)
@@ -85,7 +85,7 @@ do tmc =1, 100000
         end if
     end do
 
-    if (tmc > 1000) then  ! descarto transitorio
+    if (tmc > 10000) then  ! descarto transitorio
         m = sum(s)/real(L*L, pr)
         e_w = e/real(L*L, pr)
         ! actualizo e_c, m_c y calculo correlaciones corr_m,e
