@@ -22,17 +22,18 @@ implicit none
 integer                     :: i, j, k
 integer, parameter          :: L=40, u_max=100
 integer                     :: s(0:(L*L)-1), tmc
-integer                     :: n_down, n_up, n_left, n_right, spinadd
+integer                     :: n_down, n_up, n_left, n_right, spinadd, loc
 ! real(dp), parameter       :: k_b=1.3806488e-23
 real(pr)                    :: e, m, d_e, r, T, Rp, e_w
 real(pr),dimension(0:u_max) :: corr_e, corr_m, e_c, m_c
 real(pr)                    :: prob(-4:4, -1:1)
 
 
-36 format(F6.4, 4X, F6.4, 4X, F6.4, 4X)
+36 format(F6.4, 4X, F8.4, 4X, F6.4, 4X, F6.4, 4X)
+38 format(F6.4, 4X, F6.4, 4X, I8)
 
 open(unit=10, file='L_40-T_1_01.dat', status='unknown')
-write(10, *) "#   m    e    m2    e2    "
+write(10, *) "#m    e    m2    e2    "
 
 ! Inicializo la red de spines.
 !  1 = up
@@ -43,10 +44,12 @@ s = (/ (1, i=0, (L*L) - 1) /)
 e = -2._pr * real(L*L, pr)
 
 ! correlaciones
-corr_e = (/ (0, i=1, u_max) /)
-corr_m = (/ (0, i=1, u_max) /)
+corr_e = (/ (0, i=0, u_max) /)
+corr_m = (/ (0, i=0, u_max) /)
+loc = 0
 
-write(10, 36) sum(s)/real(L*L,pr), e/real(L*L, pr)
+m = sum(s)
+write(10, 36) m/real(L*L,pr), e/real(L*L, pr), (m/real(L*L, pr))**2, (e/real(L*L, pr))**2
 T = 1.01_pr
 
 ! posibles deltas de energia
@@ -83,17 +86,37 @@ do tmc =1, 100000
     end do
 
     if (tmc > 1000) then  ! descarto transitorio
+        m = sum(s)/real(L*L, pr)
+        e_w = e/real(L*L, pr)
         ! actualizo e_c, m_c y calculo correlaciones corr_m,e
+        e_c(mod(loc, u_max+1)) = e_w
+        m_c(mod(loc, u_max+1)) = m
+
+        if (loc>u_max) then
+            do i = 0, u_max
+                corr_e(i) = corr_e(i) + e_w*e_c(mod(loc-i, u_max+1))
+                corr_m(i) = corr_m(i) + m * m_c(mod(loc-i, u_max+1))
+            end do
+        else
+            do i = 0, loc
+                corr_e(i) = corr_e(i) + e_w*e_c(loc-i)
+                corr_m(i) = corr_m(i) + m * m_c(loc-i)
+            end do
+        end if
+        loc = loc + 1
 
         if (mod(tmc, 100)==0) then
-            m = sum(s)/real(L*L, pr)
-            e_w = e/real(L*L, pr)
             write(10, 36) m, e_w, m*m, e_w*e_w
         end if
     end if
 end do
-
 close(10)
 
+open(unit=11, file='autocorr.dat', status='unknown')
+write(11, *) "#   corr_m    corr_e   u_corr"
+do i = 0, u_max
+    write(11, 38) corr_m(i)/real(loc-i, pr), corr_e(i)/real(loc-i, pr), i
+end do
 
+close(11)
 end program

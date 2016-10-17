@@ -42,7 +42,7 @@ plt.rc('text', **text)
 
 sns.set_context("poster", font_scale=1.3)
 
-os.chdir('/home/bruno/Documentos/Doctorado/Cursos/fisicaComp/lab4/graficos')
+os.chdir('/home/bruno/Documents/Doctorado/Cursos/fisicaComp/lab4/graficos')
 
-ascii.read('../L_10-T_1_01.dat', format='commented_header')
+ascii.read('../L_40-T_1_01.dat', format='commented_header')
 
