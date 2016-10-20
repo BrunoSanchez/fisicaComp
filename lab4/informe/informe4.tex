@@ -1,0 +1,69 @@
+\documentclass[a4paper,10pt]{paper}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+
+% Title Page
+\title{Informe F\'isica Computacional IV}
+\author{Bruno Sanchez}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Se presentan los enunciados, soluciones y discusiones de resultados del cuarto trabajo pr\'actico
+de la materia de F\'{i}sica Computacional 2016.
+\end{abstract}
+
+\section{Introducci\'on}
+\subsection{Ensamble can\'onico}
+El \'area de la mec\'anica estad\'istica se caracteriza por atacar problemas de microf\'isica a trav\'es
+de una perspectiva macrosc\'opica; esto es, prediciendo comportamientos de variables
+macrosc\'opicas a traves de modelos microsc\'opicos.
+Esto es posible mediante el c\'alculo de los llamados \textit{valores medios}, mediante la teor\'ia de \textit{ensambles}.
+
+Esta supone un conjunto de sistemas que se han preparado de forma id\'entica, y que poseen alg\'un \textit{microestado}
+posible, pero un mismo \textit{macroestado} determinado.
+
+Las propiedades macrosc\'opicas del sistema estan determinadas por los valores medios sobre el ensable.
+Existen diferentes tipos de ensambles para distintos sistemas.
+En particular se centrar\'a el estudio en el \textit{Ensamble Can\'onico} el cual sirve para sistemas que 
+posee el n''umero de part\'iculas $N$, el valor de temperatura $T$ y el volumen $V$ constante.
+Esto es equivalente a decir que el sistema esta en contacto, o que intercambia energ\'ia, con un 
+\textit{reservorio t\'ermico}.
+
+\subsection{El modelo de Ising}
+El modelo de Ising es una de los modelos m\'as importantes de la mecanica estad\'istica. Propuesto
+en 1960 por W. Lenz, como un modelo b\'asico del problema de la magnetizaci\'on espont\'anea
+en los materiales ferromagn\'eticos. El mismo plantea un arreglo de dipolos (o \textit{spines}) que interact\'uan
+\'unicamente con sus primeros vecinos, de forma tal que la energ\'ia del sistema, en ausencia de 
+campos externos esta dada por:
+\begin{displaymath}
+ E = - \sum_{i\= j}J_{i,j} s_i s_j 
+\end{displaymath}
+ donde los valores de $s_k$ pueden ser $\pm1$, y la constante $J$ determina el tipo de interacci\'on.
+ En nuestro caso $J>0$, lo cual indica interacc\'on ferromagn\'etica y el arreglo de spines a utilizar ser\'a cuadrado.
+
+ Las cantidades macrosc\'opicas a calcular ser\'an:
+
+
+
+\end{document}          
