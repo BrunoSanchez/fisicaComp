@@ -20,7 +20,7 @@ use mtmod
 
 implicit none
 integer                     :: i, j, k
-integer, parameter          :: L=120, u_max=200
+integer, parameter          :: L=40, u_max=1500
 integer                     :: s(0:(L*L)-1), tmc
 integer                     :: n_down, n_up, n_left, n_right, spinadd, loc
 ! real(dp), parameter       :: k_b=1.3806488e-23
@@ -29,10 +29,10 @@ real(pr),dimension(0:u_max) :: corr_e, corr_m, e_c, m_c
 real(pr)                    :: prob(-4:4, -1:1)
 
 
-36 format(F6.4, 4X, F8.4, 4X, F6.4, 4X, F6.4, 4X)
+36 format(F8.4, 4X, F8.4, 4X, F8.4, 4X, F8.4, 4X)
 38 format(F6.4, 4X, F6.4, 4X, I8)
 
-open(unit=10, file='L_120-T_1_01.dat', status='unknown')
+open(unit=10, file='L_40-T_1_01.dat', status='unknown')
 write(10, *) "#m    e    m2    e2    "
 
 ! Inicializo la red de spines.
@@ -50,7 +50,7 @@ loc = 0
 
 m = sum(s)
 write(10, 36) m/real(L*L,pr), e/real(L*L, pr), (m/real(L*L, pr))**2, (e/real(L*L, pr))**2
-T = 1.01_pr
+T = 0.999_pr
 
 ! posibles deltas de energia
 do k = -4, 4, 2
@@ -60,7 +60,7 @@ end do
 
 ! dar vuelta la red por completo una vez
 ! de forma ordenada
-do tmc =1, 1000000
+do tmc =1, 100000
     do k = 0, (L * L) -1
         i = mod(k, L)
         j = int(k/L)
@@ -78,7 +78,7 @@ do tmc =1, 1000000
             ! sorteo un numero random
             r = grnd()
             Rp = prob(spinadd, s(k))
-            if ( Rp >= r) then
+            if ( Rp > r) then
                 s(k) = -1 * s(k)
                 e = e + d_e
             end if
@@ -105,9 +105,9 @@ do tmc =1, 1000000
         end if
         loc = loc + 1
 
-        if (mod(tmc, 100)==0) then
+        !if (mod(tmc, 100)==0) then
             write(10, 36) m, e_w, m*m, e_w*e_w
-        end if
+        !end if
     end if
 end do
 close(10)

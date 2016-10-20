@@ -42,7 +42,43 @@ plt.rc('text', **text)
 
 sns.set_context("poster", font_scale=1.3)
 
-os.chdir('/home/bruno/Documents/Doctorado/Cursos/fisicaComp/lab4/graficos')
+os.chdir('/home/bruno/Documentos/Doctorado/Cursos/fisicaComp/lab4/graficos')
 
-ascii.read('../L_40-T_1_01.dat', format='commented_header')
+d = ascii.read('../L_40-T_1_01.dat', format='commented_header')
+plt.plot(d['m'], '.')
+plt.title('Magnetization vs time')
+plt.ylabel('Magnetization')
+plt.xlabel('Monte carlo step')
+plt.savefig('m_vs_t.png')
+plt.close()
 
+plt.hist(d['m'])
+plt.title('Magnetization histograma')
+plt.xlabel('Magnetization')
+plt.savefig('m_hist.png')
+plt.close()
+
+plt.plot(d['e'], '.')
+plt.title('Energy vs time')
+plt.xlabel('Monte carlo step')
+plt.ylabel('Energy')
+plt.savefig('e_vs_t.png')
+plt.close()
+
+
+crr = ascii.read('../autocorr.dat', format='commented_header')
+
+plt.plot(crr['u_corr'], crr['corr_e']/crr['corr_e'][0], '.')
+plt.title('Autocorrelacion de E')
+plt.xlabel(r'$\tau$')
+plt.savefig('e_corr.png')
+plt.close()
+
+plt.plot(crr['u_corr'], crr['corr_m']/crr['corr_m'][0], '.')
+plt.title('Autocorrelacion de M')
+plt.xlabel(r'$\tau$')
+plt.savefig('m_corr.png')
+plt.close()
+
+
+os.chdir('..')
