@@ -17,22 +17,39 @@ program ej1a
 
 use precision, pr => dp
 use mtmod
+use json_module
 
 implicit none
-integer                     :: i, j, k
-integer, parameter          :: L=40, u_max=1500
-integer                     :: s(0:(L*L)-1), tmc
-integer                     :: n_down, n_up, n_left, n_right, spinadd, loc
-! real(dp), parameter       :: k_b=1.3806488e-23
-real(pr)                    :: e, m, d_e, r, T, Rp, e_w
-real(pr),dimension(0:u_max) :: corr_e, corr_m, e_c, m_c
-real(pr)                    :: prob(-4:4, -1:1)
+integer                             :: i, j, k
+integer, parameter                  :: u_max=1500
+integer, dimension(:), allocatable  :: s
+integer                             :: tmc, n_down, n_up, n_left, n_right
+integer                             :: spinadd, loc, L
+real(pr),dimension(0:u_max)         :: corr_e, corr_m, e_c, m_c
+real(pr)                            :: e, m, d_e, r, T, Rp, e_w
+real(pr)                            :: prob(-4:4, -1:1)
+type(json_file)                     :: json
+logical                             :: found
+character (30)                      :: Lchar, Tchar, file_pars, f1
+character (30)                      :: outfile, corr_file
 
+call json%initialize()
+
+call getarg(1, f1)
+read(f1, *) file_pars
+call json%load_file(filename = '../files/inputs/test1.json')
+
+call json%get('L', L)
+call json%get('T', T)
+call json%get('outfile', outfile)
+call json%get('corr_file', corr_file)
+
+allocate(s(0:(L-1)*(L-1))
 
 36 format(F8.4, 4X, F8.4, 4X, F8.4, 4X, F8.4, 4X)
 38 format(F6.4, 4X, F6.4, 4X, I8)
 
-open(unit=10, file='L_40-T_1_01.dat', status='unknown')
+open(unit=10, file=outfile, status='unknown')
 write(10, *) "#m    e    m2    e2    "
 
 ! Inicializo la red de spines.
@@ -85,9 +102,13 @@ do tmc =1, 100000
         end if
     end do
 
-    if (tmc > 10000) then  ! descarto transitorio
+    if (mod(tmc, 10)==0) then
         m = sum(s)/real(L*L, pr)
         e_w = e/real(L*L, pr)
+        write(10, 36) m, e_w, m*m, e_w*e_w
+    end if
+
+    if (tmc > 10000) then  ! descarto transitorio
         ! actualizo e_c, m_c y calculo correlaciones corr_m,e
         e_c(mod(loc, u_max+1)) = e_w
         m_c(mod(loc, u_max+1)) = m
@@ -105,14 +126,11 @@ do tmc =1, 100000
         end if
         loc = loc + 1
 
-        !if (mod(tmc, 100)==0) then
-            write(10, 36) m, e_w, m*m, e_w*e_w
-        !end if
     end if
 end do
 close(10)
 
-open(unit=11, file='autocorr.dat', status='unknown')
+open(unit=11, file=corr_file, status='unknown')
 write(11, *) "#   corr_m    corr_e   u_corr"
 do i = 0, u_max
     write(11, 38) corr_m(i)/real(loc-i, pr), corr_e(i)/real(loc-i, pr), i

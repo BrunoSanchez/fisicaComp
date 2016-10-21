@@ -57,12 +57,19 @@ en los materiales ferromagn\'eticos. El mismo plantea un arreglo de dipolos (o \
 \'unicamente con sus primeros vecinos, de forma tal que la energ\'ia del sistema, en ausencia de 
 campos externos esta dada por:
 \begin{displaymath}
- E = - \sum_{i\= j}J_{i,j} s_i s_j 
+ E = - \sum\limits_{i\neq j}J_{i,j} s_i s_j 
 \end{displaymath}
  donde los valores de $s_k$ pueden ser $\pm1$, y la constante $J$ determina el tipo de interacci\'on.
  En nuestro caso $J>0$, lo cual indica interacc\'on ferromagn\'etica y el arreglo de spines a utilizar ser\'a cuadrado.
+ Las orientaciones de los dipolos a lo largo de la red definen cuanta energ\'ia tiene el sistema, 
+ y cada cambio que ocurre en un dado dipolo afecta esta cantidad global.
 
  Las cantidades macrosc\'opicas a calcular ser\'an:
+ \begin{itemize}
+  \item Magnetizaci\'on: $\bar{m} = \frac{\mu}{N} \sum\limits_{i=1}^{N} s_i$
+  \item Calor espec\'ifico: $C_v = \frac{1}{k_B T^2}(\overline{E^2} -\overline{E}^2)$
+  \item Susceptibilidad magn\'etica: $\chi = \frac{1}{k_B T^2}(\overline{m^2} -\overline{m}^2)$
+ \end{itemize}
 
 
 
