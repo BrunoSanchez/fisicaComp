@@ -17,7 +17,6 @@ program ej1a
 
 use precision, pr => dp
 use mtmod
-use json_module
 
 implicit none
 integer                             :: i, j, k
@@ -28,23 +27,30 @@ integer                             :: spinadd, loc, L
 real(pr),dimension(0:u_max)         :: corr_e, corr_m, e_c, m_c
 real(pr)                            :: e, m, d_e, r, T, Rp, e_w
 real(pr)                            :: prob(-4:4, -1:1)
-type(json_file)                     :: json
-logical                             :: found
-character (30)                      :: Lchar, Tchar, file_pars, f1
+character (30)                      :: Lchar, Tchar, L1, T1
 character (30)                      :: outfile, corr_file
+character (30)                      :: outf, corr_f
 
-call json%initialize()
 
-call getarg(1, f1)
-read(f1, *) file_pars
-call json%load_file(filename = '../files/inputs/test1.json')
+print *, "getting variables"
+call get_command_argument(1, Tchar)
+call get_command_argument(2, Lchar)
+call get_command_argument(3, outf)
+call get_command_argument(4, corr_f)
 
-call json%get('L', L)
-call json%get('T', T)
-call json%get('outfile', outfile)
-call json%get('corr_file', corr_file)
+read(Tchar, *) T1
+read(Lchar, *) L1
+read(T1, *) T
+read(L1, *) L
+read(outf, *) outfile
+read(corr_f, *) corr_file
 
-allocate(s(0:(L-1)*(L-1))
+print*,'T=',T
+print*,'L=',L
+print*,'out=', outfile
+print*,'corr_out=', corr_file
+
+allocate(s(0:(L*L)-1))
 
 36 format(F8.4, 4X, F8.4, 4X, F8.4, 4X, F8.4, 4X)
 38 format(F6.4, 4X, F6.4, 4X, I8)
@@ -67,7 +73,6 @@ loc = 0
 
 m = sum(s)
 write(10, 36) m/real(L*L,pr), e/real(L*L, pr), (m/real(L*L, pr))**2, (e/real(L*L, pr))**2
-T = 0.999_pr
 
 ! posibles deltas de energia
 do k = -4, 4, 2
@@ -102,7 +107,7 @@ do tmc =1, 100000
         end if
     end do
 
-    if (mod(tmc, 10)==0) then
+    if (mod(tmc, 100)==0) then
         m = sum(s)/real(L*L, pr)
         e_w = e/real(L*L, pr)
         write(10, 36) m, e_w, m*m, e_w*e_w
@@ -135,6 +140,12 @@ write(11, *) "#   corr_m    corr_e   u_corr"
 do i = 0, u_max
     write(11, 38) corr_m(i)/real(loc-i, pr), corr_e(i)/real(loc-i, pr), i
 end do
-
 close(11)
+
+open(unit=17, file='spins_transaction.dat', status='unknown')
+do j = 0, (L*L)-1
+    write(17, *) s(j)
+end do
+close(17)
+
 end program
