@@ -38,7 +38,7 @@ print*,'L=',L
 L2 = real(L*L, pr)
 allocate(s(0:(L*L)-1))
 
-36 format(F8.4, 4X, F8.4, 4X, F8.4, 4X, F8.4, 4X)
+36 format(6(ES14.6e2, 4X))
 38 format(F6.4, 4X, F6.4, 4X, I8)
 
 open(unit=10, file='L_'//trim(Lchar)//'_Tvar.dat', status='unknown')
@@ -68,8 +68,8 @@ write(10, 36) m/L2, m2/L2**2, m4/L2**4, e/L2, e2/L2**2, 0.01
 
 ! dar vuelta la red por completo una vez
 ! de forma ordenada
-do ii = 0, 999
-    T = 0.01_pr + (ii/1000._pr)*1.3_pr
+do ii = 999, 0, -1
+    T = 0.01_pr + (ii/1000._pr)*1.8_pr
 
     ! posibles deltas de energia
     do k = -4, 4, 2
@@ -111,23 +111,6 @@ do ii = 0, 999
             m4 = m4 + dm**4
             e_w = e_w + e/L2
             e2 = e2 + (e/L2)*(e/L2)
-
-            ! actualizo e_c, m_c y calculo correlaciones corr_m,e
-            e_c(mod(loc, u_max+1)) = e_w
-            m_c(mod(loc, u_max+1)) = dm
-
-!~             if (loc>u_max) then
-!~                 do i = 0, u_max
-!~                     corr_e(i) = corr_e(i) + e_w*e_c(mod(loc-i, u_max+1))
-!~                     corr_m(i) = corr_m(i) + dm * m_c(mod(loc-i, u_max+1))
-!~                 end do
-!~             else
-!~                 do i = 0, loc
-!~                     corr_e(i) = corr_e(i) + e_w*e_c(loc-i)
-!~                     corr_m(i) = corr_m(i) + dm * m_c(loc-i)
-!~                 end do
-!~             end if
-!~             loc = loc + 1
         end if
 
     end do
@@ -144,13 +127,7 @@ do ii = 0, 999
 
 end do
 close(10)
-!~ ! escribo las correlaciones
-!~ open(unit=11, file='L_'//trim(Lchar)//'_corr.dat', status='unknown')
-!~ write(11, *) "#   corr_m    corr_e   u_corr"
-!~ do i = 0, u_max
-!~     write(11, 38) corr_m(i)/real(loc-i, pr), corr_e(i)/real(loc-i, pr), i
-!~ end do
-!~ close(11)
+
 
 
 end program

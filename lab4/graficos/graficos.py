@@ -148,27 +148,27 @@ plt.close()
 # =============================================================================
 # Apartado b
 # =============================================================================
-temperatures = np.arange(0.1, 1.3, 0.01)
-L = 40
-outfile = "../ej1b/L_{}_T_{}.dat".format(L, 0.001)
-outcorr = "../ej1b/corr_L_{}_T_{}.dat".format(L, 0.001)
+#~ temperatures = np.arange(0.1, 1.3, 0.01)
+#~ L = 40
+#~ outfile = "../ej1b/L_{}_T_{}.dat".format(L, 0.001)
+#~ outcorr = "../ej1b/corr_L_{}_T_{}.dat".format(L, 0.001)
 
-d = ascii.read(outfile, format='commented_header')
-c = ascii.read(outcorr, format='commented_header')
+#~ d = ascii.read(outfile, format='commented_header')
+#~ c = ascii.read(outcorr, format='commented_header')
 
 
-t_axis = []
-m_mean = []
-m2_mean= []
-e_mean = []
-e2_mean= []
+#~ t_axis = []
+#~ m_mean = []
+#~ m2_mean= []
+#~ e_mean = []
+#~ e2_mean= []
 
-m_std = []
-m2_std = []
-e_std  = []
-e2_std = []
-xhi = []
-cv = []
+#~ m_std = []
+#~ m2_std = []
+#~ e_std  = []
+#~ e2_std = []
+#~ xhi = []
+#~ cv = []
 
 #~ t_axis.append(0.001)
 #~ m_mean.append(np.mean(d['m']))
@@ -183,42 +183,65 @@ cv = []
 #~ e_std.append(np.std(d['e']))
 #~ e2_std.append(np.std(d['e2']))
 
-for t in temperatures:
-    outfile = "../ej1b/L_{}_T_{}.dat".format(L, t)
-    outcorr = "../ej1b/corr_L_{}_T_{}.dat".format(L, t)
+#~ for t in temperatures:
+    #~ outfile = "../ej1b/L_{}_T_{}.dat".format(L, t)
+    #~ outcorr = "../ej1b/corr_L_{}_T_{}.dat".format(L, t)
 
-    d = ascii.read(outfile, format='commented_header')
-    c = ascii.read(outcorr, format='commented_header')
+    #~ d = ascii.read(outfile, format='commented_header')
+    #~ c = ascii.read(outcorr, format='commented_header')
 
-    t_axis.append(t)
-    m_mean.append(np.mean(d['m']))
-    m2_mean.append(np.mean(d['m2']))
+    #~ t_axis.append(t)
+    #~ m_mean.append(np.mean(d['m']))
+    #~ m2_mean.append(np.mean(d['m2']))
 
-    e_mean.append(np.mean(d['e']))
-    e2_mean.append(np.mean(d['e2']))
+    #~ e_mean.append(np.mean(d['e']))
+    #~ e2_mean.append(np.mean(d['e2']))
 
-    m_std.append(np.std(d['m']))
-    m2_std.append(np.std(d['m2']))
+    #~ m_std.append(np.std(d['m']))
+    #~ m2_std.append(np.std(d['m2']))
 
-    e_std.append(np.std(d['e']))
-    e2_std.append(np.std(d['e2']))
-    xhi.append(L*L*(np.mean(d['m'])**2 - np.mean(d['m2']))/(2.2692*t))
-    cv.append(L*L*(np.mean(d['e'])**2 - np.mean(d['e2']))/(2.2692*t*t))
+    #~ e_std.append(np.std(d['e']))
+    #~ e2_std.append(np.std(d['e2']))
+    #~ xhi.append(L*L*(np.mean(d['m'])**2 - np.mean(d['m2']))/(2.2692*t))
+    #~ cv.append(L*L*(np.mean(d['e'])**2 - np.mean(d['e2']))/(2.2692*t*t))
 
-t_axis = np.array(t_axis)
-m_mean = np.array(m_mean)
-m2_mean= np.array(m2_mean)
-e_mean = np.array(e_mean)
-e2_mean= np.array(e2_mean)
+#~ t_axis = np.array(t_axis)
+#~ m_mean = np.array(m_mean)
+#~ m2_mean= np.array(m2_mean)
+#~ e_mean = np.array(e_mean)
+#~ e2_mean= np.array(e2_mean)
 
-m_std = np.array(m_std)
-m2_std = np.array(m2_std)
-e_std  = np.array(e_std)
-e2_std = np.array(e2_std)
+#~ m_std = np.array(m_std)
+#~ m2_std = np.array(m2_std)
+#~ e_std  = np.array(e_std)
+#~ e2_std = np.array(e2_std)
 
-plt.plot(t_axis, xhi)
-plt.plot(t_axis, cv)
+#~ plt.plot(t_axis, xhi)
+#~ plt.plot(t_axis, cv)
 
+#~ plt.show()
+
+
+# =============================================================================
+# Apartado B
+# =============================================================================
+
+d = ascii.read('L_10_Tvar.dat')
+d = d[1:]
+
+xhi = (d['m']**2 - d['m2'])/(2.2692*d['T'])
+cv = (d['e']**2 - d['e2'])/(2.2692*d['T'])**2
+
+plt.plot(d['T'], cv, '.')
+plt.show()
+
+plt.plot(d['T'], d['e'], '.')
+plt.show()
+
+plt.plot(d['T'], d['m'], '.')
+plt.show()
+
+plt.plot(d['T'], xhi, '.')
 plt.show()
 
 

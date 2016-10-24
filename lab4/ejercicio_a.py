@@ -62,32 +62,39 @@ subprocess.call(cmd)
 # =============================================================================
 # Apartado b
 # =============================================================================
-if not os.path.exists('../ej1b'):
-    os.makedirs('../ej1b')
+#~ if not os.path.exists('../ej1b'):
+    #~ os.makedirs('../ej1b')
 
-os.chdir('../ej1b')
-temperatures = np.arange(0.01, 1.3, 0.01)
-L = [10, 20, 40]
-for anl in L:
-    outfile = " L_{}_T_{}.dat".format(anl, 0.001)
-    outcorr = " corr_L_{}_T_{}.dat ".format(anl, 0.001)
-    spinfile = "spinfile_L_{}.dat".format(anl)
-    spinpart = "False "+spinfile
-    cmd = "../ej1b.out {} {} ".format(0.01, anl) + outfile + outcorr + spinpart
-    print cmd
-    cmd = shlex.split(cmd)
-    subprocess.call(cmd)
-    print """#########################################
-    #########################################\n \n"""
-    for t in temperatures:
-        outfile = " L_{}_T_{}.dat".format(anl, t)
-        outcorr = " corr_L_{}_T_{}.dat ".format(anl, t)
-        spinpart = "True " + spinfile
-        cmd = "../ej1b.out {} {} ".format(t, anl) + outfile + outcorr + spinpart
-        cmd = shlex.split(cmd)
-        subprocess.call(cmd)
-        print """#########################################
-#########################################\n\n"""
+#~ os.chdir('../ej1b')
+#~ temperatures = np.arange(0.01, 1.3, 0.01)
+#~ L = [10, 20, 40]
+#~ for anl in L:
+    #~ outfile = " L_{}_T_{}.dat".format(anl, 0.001)
+    #~ outcorr = " corr_L_{}_T_{}.dat ".format(anl, 0.001)
+    #~ spinfile = "spinfile_L_{}.dat".format(anl)
+    #~ spinpart = "False "+spinfile
+    #~ cmd = "../ej1b.out {} {} ".format(0.01, anl) + outfile + outcorr + spinpart
+    #~ print cmd
+    #~ cmd = shlex.split(cmd)
+    #~ subprocess.call(cmd)
+    #~ print """#########################################
+    #~ #########################################\n \n"""
+    #~ for t in temperatures:
+        #~ outfile = " L_{}_T_{}.dat".format(anl, t)
+        #~ outcorr = " corr_L_{}_T_{}.dat ".format(anl, t)
+        #~ spinpart = "True " + spinfile
+        #~ cmd = "../ej1b.out {} {} ".format(t, anl) + outfile + outcorr + spinpart
+        #~ cmd = shlex.split(cmd)
+        #~ subprocess.call(cmd)
+        #~ print """#########################################
+#~ #########################################\n\n"""
+
+# =============================================================================
+# Apartado b BIS
+# =============================================================================
+
+
+
 
 os.chdir(bornpath)
 
