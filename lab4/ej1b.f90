@@ -17,6 +17,7 @@ program ej1a
 
 use precision,  pr => dp
 use mtmod
+use ising
 
 implicit none
 integer                             :: i, j, k, ii
@@ -40,15 +41,15 @@ allocate(s(0:(L*L)-1))
 
 36 format(8(ES14.6e2, 4X))
 
-open(unit=10, file='L_'//trim(Lchar)//'_Tvar.dat', status='unknown')
+open(unit=10, file='neg_modL_'//trim(Lchar)//'_Tvar.dat', status='unknown')
 write(10, *) "#m    m2    m4    e    e2    cv    xi    T"
 
 ! Inicializo la red de spines.
 !  1 = up
 ! -1 = down
 print*, 'Iniciando spins'
-s = (/ (1, i=0, (L*L) - 1) /)
-
+call spin_initialize(s, L)
+s = -1*s
 ! energia del estado fundamental, en unidades de J
 e = -2._pr * real(L*L, pr)
 e_w = 0._pr
@@ -65,36 +66,14 @@ do ii = 99, 0, -1
     T = 0.01_pr + (ii/100._pr)*2.8_pr
 
     ! posibles deltas de energia
-    do k = -4, 4, 2
-        prob(k, +1) = exp( (-2._pr * real(k, pr)) / (2.2692_pr * T) )
-        prob(k, -1) = exp( ( 2._pr * real(k, pr)) / (2.2692_pr * T) )
-    end do
+    call probability(prob, T)
 
     ! pasos de montecarlo
     do tmc =1, 100000
+
         ! recorro la red
-        do k = 0, (L * L) -1
-            i = mod(k, L)
-            j = int(k/L)
-            n_up    = mod(j-1+L, L) * L  +  i
-            n_down  = mod(j+1  , L) * L  +  i
-            n_left  = mod(i-1+L, L)  +  L * j
-            n_right = mod(i+1  , L)  +  L * j
-            ! calculo el delta de energia
-            spinadd = s(n_up) + s(n_down) + s(n_left) + s(n_right)
-            d_e = 2_pr * s(k) * spinadd
-            if (d_e < 0) then
-                s(k) = -1 * s(k)
-                e = e + d_e
-            else
-                ! sorteo un numero random
-                r = grnd()
-                Rp = prob(spinadd, s(k))
-                if ( Rp > r) then
-                    s(k) = -1 * s(k)
-                    e = e + d_e
-                end if
-            end if
+        do k = 0, (L*L) -1
+            call metropolis_pbc(k, L, s, e, prob)
         end do
 
         if (tmc > ntermal) then  ! descarto transitorio

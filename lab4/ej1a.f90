@@ -72,7 +72,7 @@ corr_m = (/ (0, i=0, u_max) /)
 loc = 0
 
 m = sum(s)
-write(10, 36) m/real(L*L,pr), e/real(L*L, pr), (m/real(L*L, pr))**2, (e/real(L*L, pr))**2
+!write(10, 36) m/real(L*L,pr), e/real(L*L, pr), (m/real(L*L, pr))**2, (e/real(L*L, pr))**2
 
 ! posibles deltas de energia
 do k = -4, 4, 2

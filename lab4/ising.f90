@@ -19,11 +19,12 @@ use precision,  pr => dp
 use mtmod
 
 implicit none
+contains
 
 subroutine spin_initialize(s, L)
-implicit none
-integer, intent(inout)                      :: s
-integer, intent(in)                         :: L
+integer, intent(in)                 :: L
+integer, intent(inout)              :: s(0:(L*L)-1)
+integer                             :: i
 
     s = (/ (1, i=0, (L*L) - 1) /)
 end subroutine
@@ -31,13 +32,13 @@ end subroutine
 
 ! metropolis subroutine, uses the s spin array and runs a MC step
 subroutine metropolis_pbc(k, L, s, e, prob)
-implicit none
 integer                             :: i, j
 integer, intent(in)                 :: k, L
+integer, intent(inout)                 :: s(0:(L*L)-1)
 integer                             :: spinadd, n_up, n_down, n_left, n_right
-real(pr), intent(in)                :: prob(-4, 4 : -1, 1)
+real(pr), intent(in)                :: prob(-4:4, -1:1)
 real(pr), intent(inout)             :: e
-real(pr)                            :: d_e, Rp
+real(pr)                            :: d_e, Rp, r
 
     i = mod(k, L)
     j = int(k/L)
@@ -64,9 +65,9 @@ real(pr)                            :: d_e, Rp
 end subroutine
 
 subroutine probability(prob, T)
-implicit none
-real(pr), intent(inout)             :: prob
+real(pr), intent(inout)             :: prob(-4:4,-1:1)
 real(pr), intent(in)                :: T
+integer                             :: k
 
     do k = -4, 4, 2
         prob(k, +1) = exp( (-2._pr * real(k, pr)) / (2.2692_pr * T) )

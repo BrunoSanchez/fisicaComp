@@ -71,6 +71,77 @@ campos externos esta dada por:
   \item Susceptibilidad magn\'etica: $\chi = \frac{1}{k_B T^2}(\overline{m^2} -\overline{m}^2)$
  \end{itemize}
 
+ \subsection{Funci\'on de autocorrelaci\'on}
+ La funci\'on de autocorrelaci\'on es un estad\'istico importante para analizar la evolucion de las 
+ series temporales (o cualquier tipo de serie), ya que es capaz de cuantificar la dependencia de la
+ cantidad a estudiar con su historia. 
+ Esto es importante por ejemplo para conocer si, en caso de nuestras simulaciones de Monte Carlo, una
+ condici\'on inicial de simulaci\'on, artificialmente impuesta, impactar\'a en el resultado ulterior, 
+ y en caso de que lo haga, cuanto dura esta influencia.
+ La definici\'on de la funci\'on de correlaci\'on es similar a la integral de convoluci\'on de dos funciones:
+\begin{displaymath} 
+ (f \star g)(u) = \int\limits_{-\infty}^{\infty}f(x)g(x+u)dx
+\end{displaymath}
+ con la diferencia clave, en la que el signo de la variable de desplazamiento $u$ (llamada tambien \textit{delay})
+ es positivo.
+ La funcion de \textbf{auto}correlaci\'on se define como la correlaci\'on de una funci\'on consigo misma:
+ \begin{displaymath} 
+ A_f(u) = (f \star f)(u) = \int\limits_{-\infty}^{\infty}f(x)f(x+u)dx
+\end{displaymath}
+ y en casos discretos, tal como en simulaciones num\'ericas, existe la posibilidad de estimarla mediante la 
+ siguiente f\'ormula normalizada:
+ \begin{displaymath} 
+ A_f(k) = \frac{\langle f_i f_{i+k} \rangle - \langle f_i\rangle^2}{\langle f_i^2 \rangle - \langle f_i\rangle^2}
+\end{displaymath}
+ la cual posee la propiedad de que $A(0)=1$. 
+ 
+\section{Ejercicio a}
+Se pide calcular la energ\'ia y la magnetizaci\'on en funcion de los pasos de montecarlo para redes de tama\~nos
+10, 20 y 40. Se utiliz\'o una temperatura del sistema de un valor $T = 1.01\times T_c$.
+Como se puede apreciar en la figura \ref{fig:eja_e_vs_t} la energ\'ia de los sistemas es independiente
+del tama\~no (se puede ver que las redes de mayor tama\~no se grafican m\'as arriba), y muy cercana a cero.
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/e_vs_t.png}
+ % e_vs_t.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Energ\'ia en funci\'on de pasos de montecarlo. Se adicionaron constantes para diferenciar los resultados para distintos tama\~nos.}
+ \label{fig:eja_e_vs_t}
+\end{figure}
+
+En cuanto a la magnetizaci\'on se hallaron los resultados de la figura \ref{fig:eja_m_vs_t}, donde se pueden ver en paneles diferentes
+la evolucion de la magnetizaci\'on a lo largo de una porci\'on de la simulaci\'on montecarlo.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\textwidth]{../graficos/m_vs_t.png}
+ % m_vs_t.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Magnetizaci\'on en funcion de paso de montecarlo para las diferentes redes.}
+ \label{fig:eja_m_vs_t}
+\end{figure}
+
+Para estudiar mejor estas cantidades se calcularon los valores de la funcion de autocorrelaci\'on para la energ\'ia y la 
+magnetizaci\'on.
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/e_corr.png}
+ % e_corr.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Funci\'on de autocorrelaci\'on para la energ\'ia, en diferentes redes.}
+ \label{fig:e_corr}
+\end{figure}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/m_corr.png}
+ % e_corr.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Funci\'on de autocorrelaci\'on para la magnetizaci\'on, en diferentes redes.}
+ \label{fig:e_corr}
+\end{figure}
+
+\section{Ejercicio b}
+Se pide estudiar las dependencias de las cantidades magnetizaci\'on, energ\'ia, calor espec\'ifico, y
+susceptibilidad magn\'etica con la temperatura. Para esto se comenzo a temperaturas por encima de la
+temperatura cr\'itica, y se descendio hasta valores cercanos a cero.
+
 
 
 \end{document}          
