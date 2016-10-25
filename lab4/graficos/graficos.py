@@ -226,24 +226,26 @@ plt.close()
 # Apartado B
 # =============================================================================
 
-d = ascii.read('L_10_Tvar.dat')
-d = d[1:]
+d = ascii.read('../L_10_Tvar.dat')
 
 xhi = (d['m']**2 - d['m2'])/(2.2692*d['T'])
 cv = (d['e']**2 - d['e2'])/(2.2692*d['T'])**2
 
 plt.plot(d['T'], cv, '.')
+plt.xlim(0.3, 1.7)
 plt.show()
 
 plt.plot(d['T'], d['e'], '.')
+plt.xlim(0.3, 1.7)
 plt.show()
 
 plt.plot(d['T'], d['m'], '.')
+plt.xlim(0.3, 1.7)
 plt.show()
 
 plt.plot(d['T'], xhi, '.')
+plt.xlim(0.3, 1.7)
 plt.show()
-
 
 
 os.chdir('..')
