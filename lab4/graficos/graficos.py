@@ -28,6 +28,7 @@ import numpy as np
 import os
 
 from astropy.io import ascii
+from astropy.table import vstack
 
 font = {'family'        : 'sans-serif',
         'sans-serif'    : ['Computer Modern Sans serif'],
@@ -232,10 +233,18 @@ d10 = ascii.read('../ej1b/L_10_Tvar.dat')
 d20 = ascii.read('../ej1b/L_20_Tvar.dat')
 d40 = ascii.read('../ej1b/L_40_Tvar.dat')
 
-plt.plot(d10['T'], d10['cv'], '.-', label=r'$10\times10$')
-plt.plot(d20['T'], d20['cv'], 'o', label=r'$20\times20$')
-plt.plot(d40['T'], d40['cv'], '--', label=r'$40\times40$')
-plt.xlabel(r'$T$')
+dneg10 = ascii.read('../neg_modL_10_Tvar.dat')
+dneg20 = ascii.read('../neg_modL_20_Tvar.dat')
+dneg40 = ascii.read('../neg_modL_40_Tvar.dat')
+
+sd10 = vstack([d10, dneg10])
+sd20 = vstack([d20, dneg20])
+sd40 = vstack([d40, dneg40])
+
+plt.plot(sd10['T'], sd10['cv'], '*', label=r'$10\times10$')
+plt.plot(sd20['T'], sd20['cv'], 'o', label=r'$20\times20$')
+plt.plot(sd40['T'], sd40['cv'], '.', label=r'$40\times40$')
+plt.xlabel(r'$T/T_c$')
 plt.ylabel(r'$C_v$')
 plt.xlim(0.3, 2.8)
 plt.ylim(0., 6)
@@ -244,10 +253,10 @@ plt.savefig('cv.png')
 plt.close()
 
 
-plt.plot(d10['T'], d10['e'], '.-', label=r'$10\times10$')
-plt.plot(d20['T'], d20['e'], 'o', label=r'$20\times20$')
-plt.plot(d40['T'], d40['e'], '--', label=r'$40\times40$')
-plt.xlabel(r'$T$')
+plt.plot(sd10['T'], sd10['e'], '*', label=r'$10\times10$')
+plt.plot(sd20['T'], sd20['e'], 'o', label=r'$20\times20$')
+plt.plot(sd40['T'], sd40['e'], '.', label=r'$40\times40$')
+plt.xlabel(r'$T/T_c$')
 plt.ylabel(r'$E$')
 plt.xlim(0.3, 2.8)
 #plt.ylim(0., 6)
@@ -256,31 +265,55 @@ plt.savefig('e_vs_T.png')
 plt.close()
 
 
-dneg10 = ascii.read('../neg_modL_10_Tvar.dat')
-dneg20 = ascii.read('../neg_modL_20_Tvar.dat')
-dneg40 = ascii.read('../neg_modL_40_Tvar.dat')
 
-plt.plot(d10['T'], d10['m'], 'b.', label=r'$10\times10$')
-plt.plot(dneg10['T'], dneg10['m'], 'b.')
+plt.plot(sd10['T'], sd10['m'], 'b.', label=r'$10\times10$')
+plt.plot(sd20['T'], sd20['m'], 'r*', label=r'$20\times20$')
+plt.plot(sd40['T'], sd40['m'], 'kx', label=r'$40\times40$')
 
-plt.plot(d20['T'], d20['m'], 'ro', label=r'$20\times20$')
-plt.plot(dneg20['T'], dneg20['m'], 'ro')
-
-plt.plot(d40['T'], d40['m'], 'kx', label=r'$40\times40$')
-plt.plot(dneg40['T'], dneg40['m'], 'kx')
-
-plt.xlabel(r'$T$')
+plt.xlabel(r'$T/T_c$')
 plt.ylabel(r'$M$')
 plt.xlim(0.3, 2.8)
-#plt.ylim(0., 6)
 plt.legend(loc='best')
 plt.savefig('m_vs_T.png')
 plt.close()
 
 
-plt.plot(d['T'], d['xi'], '.')
-plt.xlim(0.3, 1.7)
-plt.show()
+plt.plot(sd10['T'], sd10['xi'], '*', label=r'$10\times10$')
+plt.plot(sd20['T'], sd20['xi'], 'o', label=r'$20\times20$')
+plt.plot(sd40['T'], sd40['xi'], '.', label=r'$40\times40$')
+plt.xlabel(r'$T/T_c$')
+plt.ylabel(r'$\chi$')
+plt.xlim(0.6, 1.6)
+plt.legend(loc='best')
+plt.savefig('xi_vs_T.png')
+plt.close()
+
+# =============================================================================
+# Apartado c
+# =============================================================================
+plt.figure(figsize=(24, 8))
+plt.suptitle(r'Magnetizacion para $T = 0.95\times T_c$')
+
+plt.subplot(131)
+d = ascii.read('../ej1c_L10_T_low.dat', format='commented_header')
+plt.hist(d['m'], bins=12, normed=True)
+plt.xlabel(r'Magnetizacion')
+plt.ylabel('N')
+
+plt.subplot(132)
+d = ascii.read('../ej1c_L20_T_low.dat', format='commented_header')
+plt.hist(d['m'], bins=12, normed=True)
+plt.xlabel(r'Magnetizacion')
+plt.ylabel('N')
+
+plt.subplot(133)
+d = ascii.read('../ej1c_L40_T_low.dat', format='commented_header')
+plt.hist(d['m'], bins=12, normed=True)
+plt.xlabel(r'Magnetizacion')
+plt.ylabel('N')
+
+plt.savefig('hist_m_low.png')
+plt.close()
 
 
 os.chdir('..')

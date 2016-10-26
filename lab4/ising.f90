@@ -76,4 +76,33 @@ integer                             :: k
 end subroutine
 
 
+subroutine histo_init(bins, counts, nbins, lo_lim, hi_lim, delta)
+integer                             :: i, j
+integer, intent(in)                 :: nbins
+integer, intent(inout)              :: counts(1:nbins)
+real(pr), intent(inout)             :: bins(0:nbins), delta
+real(pr), intent(in)                :: lo_lim, hi_lim
+
+    counts = (/(0, i=1, nbins)/)
+    delta = (hi_lim - lo_lim)/nbins
+    do j = 0, nbins
+        bins(j) = lo_lim + j * delta
+    end do
+
+end subroutine
+
+
+
+subroutine histogram(bins, datapoint, counts, nbins, delta)
+integer                             :: ibin
+integer, intent(in)                 :: nbins
+integer, intent(inout)              :: counts(1:nbins)
+real(pr), intent(in)                :: bins(0:nbins), delta
+real(pr), intent(in)                :: datapoint
+
+    ibin = int( (datapoint - bins(0))/delta ) + 1
+    counts(ibin) = counts(ibin) + 1
+
+end subroutine
+
 END MODULE ising
