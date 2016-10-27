@@ -43,7 +43,7 @@ plt.rc('text', **text)
 
 #sns.set_context("poster", font_scale=1.3)
 
-os.chdir('/home/bruno/Documents/Doctorado/Cursos/fisicaComp/lab4/graficos')
+os.chdir('/home/bruno/Documentos/Doctorado/Cursos/fisicaComp/lab4/graficos')
 
 crr10 = ascii.read('../corrL10T101.dat', format='commented_header')
 crr20 = ascii.read('../corrL20T101.dat', format='commented_header')
@@ -291,28 +291,44 @@ plt.close()
 # =============================================================================
 # Apartado c
 # =============================================================================
-plt.figure(figsize=(24, 8))
+d10 = ascii.read('../ej1c_L10_T_lo.dat', format='commented_header')
+d20 = ascii.read('../ej1c_L20_T_lo.dat', format='commented_header')
+d40 = ascii.read('../ej1c_L40_T_lo.dat', format='commented_header')
+
+d10_counts = d10['counts']/float(sum(d10['counts']))
+d20_counts = d20['counts']/float(sum(d20['counts']))
+d40_counts = d40['counts']/float(sum(d40['counts']))
+
+
 plt.suptitle(r'Magnetizacion para $T = 0.95\times T_c$')
-
-plt.subplot(131)
-d = ascii.read('../ej1c_L10_T_low.dat', format='commented_header')
-plt.hist(d['m'], bins=12, normed=True)
+plt.bar(d10['center'], d10_counts, width=0.04, color='b', label=r'$10\times10$')
+plt.bar(d20['center']+0.04, d20_counts, width=0.04, color='r', label=r'$20\times20$')
+plt.bar(d40['center']+0.08, d40_counts, width=0.04, color='g', label=r'$40\times40$')
 plt.xlabel(r'Magnetizacion')
 plt.ylabel('N')
-
-plt.subplot(132)
-d = ascii.read('../ej1c_L20_T_low.dat', format='commented_header')
-plt.hist(d['m'], bins=12, normed=True)
-plt.xlabel(r'Magnetizacion')
-plt.ylabel('N')
-
-plt.subplot(133)
-d = ascii.read('../ej1c_L40_T_low.dat', format='commented_header')
-plt.hist(d['m'], bins=12, normed=True)
-plt.xlabel(r'Magnetizacion')
-plt.ylabel('N')
-
+plt.legend(loc='best')
 plt.savefig('hist_m_low.png')
+plt.close()
+
+
+
+d10 = ascii.read('../ej1c_L10_T_hi.dat', format='commented_header')
+d20 = ascii.read('../ej1c_L20_T_hi.dat', format='commented_header')
+d40 = ascii.read('../ej1c_L40_T_hi.dat', format='commented_header')
+
+d10_counts = d10['counts']/float(sum(d10['counts']))
+d20_counts = d20['counts']/float(sum(d20['counts']))
+d40_counts = d40['counts']/float(sum(d40['counts']))
+
+
+plt.suptitle(r'Magnetizacion para $T = 1.05\times T_c$')
+plt.bar(d10['center'], d10_counts, width=0.04, color='b', label=r'$10\times10$')
+plt.bar(d20['center']+0.04, d20_counts, width=0.04, color='r', label=r'$20\times20$')
+plt.bar(d40['center']+0.08, d40_counts, width=0.04, color='g', label=r'$40\times40$')
+plt.xlabel(r'Magnetizacion')
+plt.ylabel('N')
+plt.legend(loc='best')
+plt.savefig('hist_m_hi.png')
 plt.close()
 
 

@@ -89,7 +89,7 @@ do tmc =1, nmtc
 end do
 
 do j = 1, nbins
-    write(10, 36) counts(j), lo_lim + (j-0.5)*(delta/2._pr)
+    write(10, 36) counts(j), lo_lim + (j-0.5)*(delta)
 end do
 
 close(10)
@@ -145,7 +145,7 @@ do tmc =1, nmtc
 end do
 
 do j = 1, nbins
-    write(10, 36) counts(j), lo_lim + (j-0.5)*(delta/2._pr)
+    write(10, 36) counts(j), lo_lim + (j-0.5)*(delta)
 end do
 
 close(10)
@@ -201,7 +201,7 @@ do tmc =1, nmtc
 end do
 
 do j = 1, nbins
-    write(10, 36) counts(j), lo_lim + (j-0.5)*delta/2._pr)
+    write(10, 36) counts(j), lo_lim + (j-0.5)*(delta)
 end do
 
 close(10)
