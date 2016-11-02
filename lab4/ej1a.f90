@@ -107,13 +107,14 @@ do tmc =1, 100000
         end if
     end do
 
-    if (mod(tmc, 100)==0) then
-        m = sum(s)/real(L*L, pr)
-        e_w = e/real(L*L, pr)
-        write(10, 36) m, e_w, m*m, e_w*e_w
-    end if
 
     if (tmc > 10000) then  ! descarto transitorio
+        m = sum(s)/real(L*L, pr)
+        e_w = e/real(L*L, pr)
+
+        if (mod(tmc, 100)==0) then  !!!!!!!!!!!!!! BUG
+            write(10, 36) m, e_w, m*m, e_w*e_w
+        end if
         ! actualizo e_c, m_c y calculo correlaciones corr_m,e
         e_c(mod(loc, u_max+1)) = e_w
         m_c(mod(loc, u_max+1)) = m

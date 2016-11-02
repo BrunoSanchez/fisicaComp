@@ -4,6 +4,9 @@
 \usepackage{minted}
 \usepackage{color}
 \usepackage{graphicx}
+\usepackage{wrapfig}
+%\usepackage{subcaption}
+\usepackage{subfigure}
 \usepackage{amsmath}
 \usepackage{textcomp}
 \usepackage{geometry}
@@ -43,10 +46,10 @@ Esto es posible mediante el c\'alculo de los llamados \textit{valores medios}, m
 Esta supone un conjunto de sistemas que se han preparado de forma id\'entica, y que poseen alg\'un \textit{microestado}
 posible, pero un mismo \textit{macroestado} determinado.
 
-Las propiedades macrosc\'opicas del sistema estan determinadas por los valores medios sobre el ensable.
+Las propiedades macrosc\'opicas del sistema estan determinadas por los valores medios sobre el ensamble.
 Existen diferentes tipos de ensambles para distintos sistemas.
 En particular se centrar\'a el estudio en el \textit{Ensamble Can\'onico} el cual sirve para sistemas que 
-posee el n''umero de part\'iculas $N$, el valor de temperatura $T$ y el volumen $V$ constante.
+en los cuales el numero de part\'iculas $N$, el valor de temperatura $T$ y el volumen $V$ son constantes.
 Esto es equivalente a decir que el sistema esta en contacto, o que intercambia energ\'ia, con un 
 \textit{reservorio t\'ermico}.
 
@@ -94,26 +97,32 @@ campos externos esta dada por:
  A_f(k) = \frac{\langle f_i f_{i+k} \rangle - \langle f_i\rangle^2}{\langle f_i^2 \rangle - \langle f_i\rangle^2}
 \end{displaymath}
  la cual posee la propiedad de que $A(0)=1$. 
+ \vspace{5cm}
  
 \section{Ejercicio a}
 Se pide calcular la energ\'ia y la magnetizaci\'on en funcion de los pasos de montecarlo para redes de tama\~nos
 10, 20 y 40. Se utiliz\'o una temperatura del sistema de un valor $T = 1.01\times T_c$.
-Como se puede apreciar en la figura \ref{fig:eja_e_vs_t} la energ\'ia de los sistemas es independiente
-del tama\~no (se puede ver que las redes de mayor tama\~no se grafican m\'as arriba), y muy cercana a cero.
-\begin{figure}
+Como se puede apreciar en la figura \ref{fig:eja_e_vs_t} la energ\'ia de los sistemas no es independiente
+del tama\~no (se puede ver que las redes de mayor tama\~no se grafican m\'as arriba) ya que la dispersi\'on de los valores
+claramente es mayor para sistemas peque\~nos, aunque su valor medio es siempre muy cercano a cero en todos los casos.
+
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/e_vs_t.png}
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/e_vs_t.png}
  % e_vs_t.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Energ\'ia en funci\'on de pasos de montecarlo. Se adicionaron constantes para diferenciar los resultados para distintos tama\~nos.}
  \label{fig:eja_e_vs_t}
 \end{figure}
 
 En cuanto a la magnetizaci\'on se hallaron los resultados de la figura \ref{fig:eja_m_vs_t}, donde se pueden ver en paneles diferentes
-la evolucion de la magnetizaci\'on a lo largo de una porci\'on de la simulaci\'on montecarlo.
+la evolucion de la magnetizaci\'on a lo largo de una porci\'on de la simulaci\'on montecarlo. Esto tambi\'en demuestra que el tama\~no del
+sistema simulado es clave en el comportamiento de la magnetizaci\'on, la cual claramente es m\'as inestable en sistemas peque\~nos, y fluctua
+de valores negativos a positivos en menos pasos de MC. Esto puede incluso anticiparnos alg\'un comportamiento especial de la funci\'on de 
+autocorrelaci\'on para sistemas $10\times10$.
 
-\begin{figure}
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth]{../graficos/m_vs_t.png}
+ \includegraphics[width=0.6\textwidth]{../graficos/m_vs_t.png}
  % m_vs_t.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Magnetizaci\'on en funcion de paso de montecarlo para las diferentes redes.}
  \label{fig:eja_m_vs_t}
@@ -121,21 +130,28 @@ la evolucion de la magnetizaci\'on a lo largo de una porci\'on de la simulaci\'o
 
 Para estudiar mejor estas cantidades se calcularon los valores de la funcion de autocorrelaci\'on para la energ\'ia y la 
 magnetizaci\'on.
-\begin{figure}
+Para la figura \ref{fig:e_corr} se puede apreciar que el resultado es inesperado y se especula un error en el programa que posiblemente
+arruin\'o la estimaci\'on de la funci\'on de autocorrelaci\'on.
+Para la magnetizaci\'on, se aprecia en la figura \ref{fig:m_corr} un panorama mucho m\'as cre\'ible, y los resultados exhiben algo que era 
+anticipable en el diagrama de la figura \ref{fig:eja_m_vs_t}, donde el sistema con tama\~no mayor posee dificultades para invertir su magnetizaci\'on en
+tiempos cortos, y los sistemas m\'as peque\~nos son mucho m\'as veloces para cambiar de magnetizaci\'on.
+
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/e_corr.png}
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/e_corr.png}
  % e_corr.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Funci\'on de autocorrelaci\'on para la energ\'ia, en diferentes redes.}
  \label{fig:e_corr}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/m_corr.png}
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/m_corr.png}
  % e_corr.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Funci\'on de autocorrelaci\'on para la magnetizaci\'on, en diferentes redes.}
- \label{fig:e_corr}
+ \label{fig:m_corr}
 \end{figure}
+\vspace{5cm}
 
 \section{Ejercicio b}
 Se pide estudiar las dependencias de las cantidades magnetizaci\'on, energ\'ia, calor espec\'ifico, y
@@ -145,34 +161,90 @@ Las redes simuladas fueron inicializadas en estados homog\'eneos con todos los \
 o hacia abajo.
 
 El valor de magnetizaci\'on debi\'o estimarse luego de varias corridas para lograr poblar el diagrama de la 
-figura \ref{fig:m_vs_T}, mostrando una bifurcacion en las magnetizaciones posibles.
+figura \ref{fig:m_vs_T}, mostrando una bifurcaci\'on en las magnetizaciones posibles.
+Adem\'as se incluye el gr\'afico de la figura \ref{fig:e_vs_T}, donde se puede apreciar el valor de la energ\'ia en
+funci\'on de la temperatura, mostrando la suave tendencia en los tres tama\~nos a crecer con la temperatura y a
+estacionarse luego de la temperatura cr\'itica.
 
-
-\begin{figure}
+\begin{figure}[!h]
 \centering
- \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/m_vs_T.png}
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/m_vs_T.png}
  % m_vs_T.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Magnetizaci\'on en funci\'on de la temperatura}
  \label{fig:m_vs_T}
 \end{figure}
 
-
-\begin{figure}
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth]{../graficos/e_vs_T.png}
+ \includegraphics[width=0.6\textwidth]{../graficos/e_vs_T.png}
  % e_vs_T.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Energ\'ia en funci\'on de la temperatura.}
  \label{fig:e_vs_T}
 \end{figure}
 
-\begin{figure}
+Por otro lado se incluyen los gr\'aficos de la susceptibilidad magn\'etica (figura \ref{fig:xi_vs_T}) y del calor espec\'ifico
+(figura \ref{fig:cv}), calculados para temperaturas alrededor de la temperatura $T_c$. Es posible apreciar para el calor espec\'ifico como
+el valor explota alrededor de la temperatura cr\'itica, y esto es m\'as claro para sistemas mayores. En cuanto a la susceptibilidad magn\'etica
+se puede ver que hay una fuerte discontinuidad, y se aprecia que el l\'imite por derecha y por izquierda de esta funci\'on de la temperatura no es igual.
+Las simulaciones se corrieron en temperaturas descendentes (comenzando por temperaturas mayores a $T_c$ y se desciende gradualmente la temperatura, sin 
+redefinir la condici\'on inicial de la red) por lo que es una posible explicaci\'on del desfasaje visto en el valor de corte para distintos tama\~nos.
+
+\begin{figure}[!h]
  \centering
- \includegraphics[width=0.7\textwidth,keepaspectratio=true]{../graficos/xi_vs_T.png}
+ \includegraphics[width=0.6\textwidth,keepaspectratio=true]{../graficos/xi_vs_T.png}
  % xi_vs_T.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
  \caption{Susceptibilidad magn\'etica en funci\'on de la temperatura}
  \label{fig:xi_vs_T}
 \end{figure}
 
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=0.6\textwidth]{../graficos/cv.png}
+ % cv.png: 0x0 pixel, 300dpi, 0.00x0.00 cm, bb=
+ \caption{Calor espec\'ifico en funci\'on de la temperatura}
+ \label{fig:cv}
+\end{figure}
 
+\vspace{5cm}
+
+\section{Ejercicio c}
+Se pide calcular los histogramas de magnetizaci\'on para temperaturas menores y mayores a la temperatura cr\'itica.
+En las figuras \ref{fig:sub1} y \ref{fig:sub2} se pueden apreciar los resultados obtenidos.
+Es notoria la diferencia entre ambos resultados, donde para temeperaturas menores se obserba una marcada bimolidad, especialmente
+en sistemas $40\times40$, caracter\'istica que se desvanece por completo a temperaturas superiores a la temperatura cr\'itica.
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}%[]%$T < T_c $]
+  \centering
+  \includegraphics[width=0.48\linewidth]{../graficos/hist_m_low.png}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}%[]%$T > T_c $]
+  \centering
+  \includegraphics[width=0.48\linewidth]{../graficos/hist_m_hi.png}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Histogramas de M}
+\label{fig:test}
+\end{figure}
+
+
+\section{Codigos}
+Los codigos empleados se detallan a continuaci\'on.
+Se crearon las subrutinas del modulo ising detellada a continuaci\'on.
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../ising.f90}
+\vspace{5cm}
+
+Se da a continuaci\'on la secci\'on del ejercicio a donde se calcula la correlaci\'on.
+\inputminted[firstline=116, lastline=143, linenos, firstnumber=1]{fortran}{../ej1a.f90}
+\vspace{5cm}
+
+Se da un ejemplo de c\'odigo para el ejercicio b, donde se vari\'o la temperatura, y se 
+utilizan las subrutinas.
+\inputminted[firstline=16, linenos, firstnumber=1]{fortran}{../ej1b.f90}
+\vspace{5cm}
+
+Se utilizaron adem\'as c\'odigo python para generar los gr\'aficos.
 
 \end{document}          
