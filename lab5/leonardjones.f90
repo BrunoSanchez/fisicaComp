@@ -23,6 +23,7 @@ implicit none
 integer, parameter              :: npart=256
 real(pr)                        :: e_cut, r_cut2
 real(pr), parameter             :: temp=1.1_pr, a=5._pr**(1._pr/3._pr)
+real(pr), parameter             :: dt=0.005
 real(pr), allocatable           :: vel(:), part(:), f(:)
 
 
@@ -32,7 +33,7 @@ e_cut = (4._pr/r_cut2**3) * (1._pr/(r_cut2**3) - 1._pr)
 
 call fcc_init(npart, a, part)
 
-call vel_init(npart, temp, vel)
+call vel_init(npart, temp, vel, dt, part)
 
 36 format(I12, 2X, 3(F8.4, 2X))
 
@@ -54,5 +55,8 @@ close(10)
 
 call force(part, npart, a, f, r_cut2, e_cut)
 
+!~ do i = 1, 3*npart
+!~     print*, f(i)
+!~ end do
 
 end program

@@ -63,7 +63,7 @@ do ix = 0, 3, 1
 end do
 
 open(unit=10, file='fcc_part.dat', status='unknown')
-write(10, *) '#  i  x  y  z'
+!write(10, *) '#  i  x  y  z'
 do i = 1, n
     write(10, 36) i, part(i*3-2), part(i*3-1), part(i*3)
 end do
