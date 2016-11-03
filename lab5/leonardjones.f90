@@ -22,7 +22,7 @@ implicit none
 !integer                         :: i, j, k
 integer, parameter              :: npart=256
 real(pr)                        :: e_cut, r_cut2
-real(pr), parameter             :: temp=1.1_pr, a=5._pr**(1._pr/3._pr)
+real(pr), parameter             :: temp=1.1_pr, a=1!5._pr**(1._pr/3._pr)
 real(pr), parameter             :: dt=0.005
 real(pr), allocatable           :: vel(:), part(:), f(:)
 

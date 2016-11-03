@@ -42,31 +42,32 @@ real(pr)                        :: a
 
                 if (i > npart) exit
                 ! coloco una cubica
-                part(3*i - 2) = ix*a
-                part(3*i - 1) = iy*a
-                part(3*i)     = iz*a
+                part(3*i - 2) = ix
+                part(3*i - 1) = iy
+                part(3*i)     = iz
 
                 ! coloco tres mas para el fcc
                 i = i + 1
-                part(3*i - 2) = ix + a/2.
-                part(3*i - 1) = iy + a/2.
+                part(3*i - 2) = ix + 1./2.
+                part(3*i - 1) = iy + 1./2.
                 part(3*i)     = iz
 
                 i = i + 1
-                part(3*i - 2) = ix + a/2.
+                part(3*i - 2) = ix + 1./2.
                 part(3*i - 1) = iy
-                part(3*i)     = iz + a/2.
+                part(3*i)     = iz + 1./2.
 
                 i = i + 1
                 part(3*i - 2) = ix
-                part(3*i - 1) = iy + a/2.
-                part(3*i)     = iz + a/2.
+                part(3*i - 1) = iy + 1./2.
+                part(3*i)     = iz + 1./2.
 
                 i = i + 1
             end do
         end do
     end do
 
+    part = part * a
 end subroutine fcc_init
 
 
