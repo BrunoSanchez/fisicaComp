@@ -43,3 +43,7 @@ v2 = vel['vx']**2 + vel['vy']**2 + vel['vz']**2
 plt.hist(v2)
 plt.show()
 
+energ = ascii.read('energies_temp.dat')
+plt.plot(energ['step'], energ['e_k'])
+plt.show()
+
