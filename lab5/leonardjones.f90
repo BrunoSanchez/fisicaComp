@@ -19,13 +19,13 @@ use precision, pr => dp
 use ljones
 
 implicit none
-integer                         :: nstep, j, i, k
+integer                         :: nstep, i, k
 integer, parameter              :: npart=256
 real(pr)                        :: l, ln, t, a, r_cut2
 real(pr), parameter             :: temp=1.1_pr
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
 real(pr)                        :: eu, ek, temp_k, e_tot, e_cut
-real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
+!real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
 real(pr), dimension(1:3*npart)  :: part, f, vel
 
 34 format(I12, 2X, 3(ES14.6e2, 2X))
@@ -55,7 +55,7 @@ end do
 close(10)
 
 print*, 'vel init'
-call vel_init(npart, temp, vel, dt, part)
+call vel_init(npart, temp, vel)
 open(unit=10, file='vel_init.dat', status='unknown')
 write(10, *) '# i   vx    vy    vz   '
 do i = 1, npart
