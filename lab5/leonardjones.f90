@@ -19,56 +19,92 @@ use precision, pr => dp
 use ljones
 
 implicit none
-integer                         :: nstep
-integer, parameter              :: npart=256
-real(pr)                        :: e_cut, r_cut2, en, e_tot, temp_k
-real(pr), parameter             :: temp=1.1_pr, a=5._pr**(1._pr/3._pr)
+integer                         :: nstep, j, i, k
+real(pr)                        :: l, ln, t
+real(pr), parameter             :: temp=1.1_pr
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
-real(pr), dimension(1:3*npart)  :: vel, part, f
+
+npart = 256
+a=5._pr**(1._pr/3._pr)
+
+allocate(f(1:3*npart))
+allocate(part(1:3*npart))
+allocate(vel(1:3*npart))
+allocate(f_old(1:3*npart))
+allocate(x_new(1:3*npart))
+allocate(v_new(1:3*npart))
 
 
-36 format(I12, 2X, 4(ES14.6e2, 2X))
+34 format(I12, 2X, 3(ES14.6e2, 2X))
+36 format(F12.6, 2X, 4(ES14.6e2, 2X))
+38 format(F12.6, 2X, 6(ES14.6e2, 2X))
 
 print*, 'Starting'
 nstep = nint((tf-t0)/dt)
 r_cut2 = 2.5_pr*2.5_pr
 e_cut = (4._pr/r_cut2**3) * (1._pr/(r_cut2**3) - 1._pr)
-en = 0._pr
+eu = 0._pr
+ek = 0._pr
 e_tot = 0._pr
+ln = real(npart/4, pr)**(1./3.)
+l = ln * a
+
 
 print*, 'fcc init'
-call fcc_init(npart, a, part)
+call fcc_init()
+part = part - l * nint(part/l)
 open(unit=10, file='fcc_part.dat', status='unknown')
 write(10, *) '# i   x    y    z   '
 do i = 1, npart
-    write(10, 36) i, part(i*3-2), part(i*3-1), part(i*3)
+    write(10, 34) i, part(i*3-2), part(i*3-1), part(i*3)
 end do
 close(10)
 print*, 'vel init'
 
-call vel_init(npart, temp, vel, dt, part)
+call vel_init(temp, dt)
 open(unit=10, file='vel_init.dat', status='unknown')
 write(10, *) '# i   vx    vy    vz   '
 do i = 1, npart
-    write(10, 36) i, vel(i*3-2), vel(i*3-1), vel(i*3)
+    write(10, 34) i, vel(i*3-2), vel(i*3-1), vel(i*3)
 end do
 close(10)
 
-!~ open(unit=10, file='x_old.dat', status='unknown')
-!~ write(10, *) '# i   x    y    z   '
-!~ do i = 1, npart
-!~     write(10, 36) i, x_old(i*3-2), x_old(i*3-1), x_old(i*3)
-!~ end do
-!~ close(10)
 
-call force(part, npart, a, f, r_cut2, e_cut, en)
-
+call force()
 
 open(11, file='energies_temp.dat', status='unknown')
-write(11, *) '# step   e_pot   ek    etot   temp'
-do k =1, nstep
-    call integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
-    write(11, 36) k, en, e_tot-en, e_tot, temp_k
+write(11, *) '# step   ek   eu    etot   temp'
+open(12, file='trayectoria42.dat', status='unknown')
+write(12, *) '# step   x   y   z   vx   vy   vz'
+open(13, file='trayectoria1.dat', status='unknown')
+write(13, *) '# step   x   y   z   vx   vy   vz'
+
+
+do k = 1, 1000
+    call integrate(dt)
+
+    part = part - l * nint(part/l)
+    if (mod(k, 50)==0) then
+        print*, temp_k
+        vel = vel * sqrt(temp/temp_k)
+    end if
 end do
+
+
+do k =1, nstep
+    t = t0 + dt * k
+    call integrate(dt)
+
+    part = part - l * nint(part/l)
+
+    write(11, 36) t, ek, eu, e_tot, temp_k
+    write(12, 38) t, part(3*42-2), part(3*42-1), part(3*42), vel(3*42-2), vel(3*42-1), vel(3*42)
+    write(13, 38) t, part(1), part(2), part(3), vel(1), vel(2), vel(3)
+end do
+
+
+close(11)
+close(12)
+close(13)
 
 end program

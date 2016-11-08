@@ -19,19 +19,20 @@ use precision, pr => dp
 use mtmod, only                 : grnd
 
 implicit none
-integer                         :: i, j, k
+integer                         :: npart
+real(pr), allocatable           :: vel(:), part(:), f(:)
+real(pr)                        :: r_cut2, a
+real(pr)                        :: eu, ek, e_cut, temp_k, e_tot
+real(pr), allocatable           :: f_old(:), x_new(:), v_new(:)
 
 contains
 
-subroutine fcc_init(npart, a, part)
-integer                         :: npart, ln
+subroutine fcc_init()
+integer                         :: i, j, k
+integer                         :: ln
 integer                         :: ix, iy, iz
-real(pr), dimension(1:3*npart)  :: part
-real(pr)                        :: a
 
     ln = (npart/4)**(1./3.)
-
-    print*, a, npart, ln
 
     i = 1
     do ix = 0, ln-1, 1
@@ -69,15 +70,14 @@ real(pr)                        :: a
 end subroutine fcc_init
 
 
-subroutine vel_init(n, temp, vel, dt, part)
-integer                         :: i, j, n
-real(pr), dimension(1:3*n)      :: vel, part
+subroutine vel_init(temp, dt)
+integer                         :: i, j
 real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp, dt
 
     sumv = 0._pr !(/ (0._pr, i = 1, 3)/)
     sumv2= 0._pr !(/ (0._pr, i = 1, 3)/)
 
-    do i = 1, 3*n-2, 3
+    do i = 1, 3*npart-2, 3
         do j = 0, 2
             vel(i+j) = grnd() - 0.5_pr
             sumv(j+1) = sumv(j+1) + vel(i+j)
@@ -85,12 +85,12 @@ real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp, dt
         end do
     end do
 
-    sumv = sumv/n
-    sumv2 = sumv2/n
+    sumv = sumv/real(npart, pr)
+    sumv2 = sumv2/real(npart, pr)
 
     fs = sqrt(3._pr*temp/(sumv2(1)+sumv2(2)+sumv2(3)) )
 
-    do i = 1, 3*n-2, 3
+    do i = 1, 3*npart-2, 3
         do j = 0, 2
             vel(i+j) = fs*(vel(i+j) - sumv(j+1))
         end do
@@ -99,15 +99,14 @@ real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp, dt
 end subroutine vel_init
 
 
-subroutine force(part, npart, a, f, r_cut2, e_cut, en)
-integer                         :: npart
-real(pr)                        :: r2, r_cut2, a, ff, r2i, r6i
-real(pr)                        :: en, e_cut, l, ln
+subroutine force()
+integer                         :: i, j, k
+real(pr)                        :: r2, ff, r2i, r6i
+real(pr)                        :: l, ln
 real(pr)                        :: dx, dy, dz
-real(pr), dimension(1:3*npart)  :: part, f
 
     f = 0
-    en = 0
+    eu = 0
     ln = real(npart/4, pr)**(1./3.)
     l = ln * a
 
@@ -138,7 +137,7 @@ real(pr), dimension(1:3*npart)  :: part, f
                 f(3*j - 1) = f(3*j - 1) - ff*dy
                 f(3*j)     = f(3*j)     - ff*dz
 
-                en = en + 4._pr*r6i*(r6i-1._pr) - e_cut
+                eu = eu + (4._pr*r6i*(r6i-1._pr) - e_cut)
             end if
         end do
     end do
@@ -146,13 +145,9 @@ real(pr), dimension(1:3*npart)  :: part, f
 end subroutine force
 
 
-subroutine integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
-integer                         :: npart, i, j, k
-real(pr)                        :: r_cut2, a
-real(pr)                        :: en, e_cut, temp_k, e_tot
+subroutine integrate(dt)
+integer                         :: i, j, k
 real(pr)                        :: sumvv, sumvv2, dt
-real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
-real(pr), dimension(1:3*npart)  :: part, f, vel
 
     sumvv  = 0
     sumvv2 = 0
@@ -162,19 +157,19 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 
     ! nuevas fuerzas
     f_old = f
-    call force(x_new, npart, a, f, r_cut2, e_cut, en)
+    call force()
 
     !nuevas velocidades
-    v_new = vel + (f + f_old)/(2._pr*dt)
+    v_new  = vel + dt * (f + f_old)/2._pr
     sumvv2 = sum(v_new**2)
 
     ! calculo temperatura y energia
     temp_k = sumvv2/real(3*npart, pr)
-    e_tot = (en + 0.5_pr * sumvv2)/real(npart, pr)
-
+    ek = (0.5_pr * sumvv2)
+    e_tot  = ek + eu
     ! actualizo
     part = x_new
-    vel = v_new
+    vel  = v_new
 
 end subroutine integrate
 

@@ -35,15 +35,28 @@ plt.plot(pos['x'][0:4], pos['y'][0:4], pos['z'][0:4], 'r')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('z')
-plt.show()
+plt.savefig('fcc_init.png')
+plt.close()
+
 
 vel = ascii.read('vel_init.dat')
 v2 = vel['vx']**2 + vel['vy']**2 + vel['vz']**2
 
-plt.hist(v2)
-plt.show()
+plt.hist(v2, normed=True)
+plt.xlabel(r'$v^2$')
+plt.savefig('init_velocities.png')
+plt.close()
+
 
 energ = ascii.read('energies_temp.dat')
-plt.plot(energ['step'], energ['e_k'])
-plt.show()
+plt.plot(energ['step'], energ['ek'], label=r'$E_k$')
+plt.plot(energ['step'], energ['eu'], label=r'$E_{u}$')
+plt.plot(energ['step'], energ['etot'], label=r'$E_{tot}$')
+plt.legend(loc='best')
+plt.savefig('energies.png')
+plt.close()
 
+plt.plot(energ['step'], energ['temp'], label=r'$T$')
+plt.legend(loc='best')
+plt.savefig('temperature.png')
+plt.close()
