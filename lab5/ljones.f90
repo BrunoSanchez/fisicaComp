@@ -26,10 +26,8 @@ contains
 subroutine fcc_init(npart, a, part)
 integer                         :: npart, ln
 integer                         :: ix, iy, iz
-real(pr), allocatable           :: part(:)
+real(pr), dimension(1:3*npart)  :: part
 real(pr)                        :: a
-
-    allocate(part(1:3*npart))
 
     ln = (npart/4)**(1./3.)
 
@@ -71,13 +69,10 @@ real(pr)                        :: a
 end subroutine fcc_init
 
 
-subroutine vel_init(n, temp, vel, dt, part, x_old)
+subroutine vel_init(n, temp, vel, dt, part)
 integer                         :: i, j, n
-real(pr), allocatable           :: vel(:), x_old(:), part(:)
+real(pr), dimension(1:3*n)      :: vel, part
 real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp, dt
-
-    allocate(vel(1:3*n))
-    !allocate(x_old(1:3*n))
 
     sumv = 0._pr !(/ (0._pr, i = 1, 3)/)
     sumv2= 0._pr !(/ (0._pr, i = 1, 3)/)
@@ -98,7 +93,6 @@ real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp, dt
     do i = 1, 3*n-2, 3
         do j = 0, 2
             vel(i+j) = fs*(vel(i+j) - sumv(j+1))
-            !x_old(i+j) = part(i+j) - vel(i+j)*dt
         end do
     end do
 
@@ -110,7 +104,7 @@ integer                         :: npart
 real(pr)                        :: r2, r_cut2, a, ff, r2i, r6i
 real(pr)                        :: en, e_cut, l, ln
 real(pr)                        :: dx, dy, dz
-real(pr), allocatable           :: part(:), f(:)
+real(pr), dimension(1:3*npart)  :: part, f
 
     f = 0
     en = 0
@@ -152,17 +146,13 @@ real(pr), allocatable           :: part(:), f(:)
 end subroutine force
 
 
-subroutine integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, x_old, e_tot, temp_k)
+subroutine integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
 integer                         :: npart, i, j, k
 real(pr)                        :: r_cut2, a
 real(pr)                        :: en, e_cut, temp_k, e_tot
 real(pr)                        :: sumvv, sumvv2, dt
-real(pr), allocatable           :: f_old(:), x_new(:), v_new(:), x_old(:)
-real(pr), allocatable           :: part(:), f(:), vel(:)
-
-    allocate(x_new(1:3*npart))
-    allocate(v_new(1:3*npart))
-    allocate(f_old(1:3*npart))
+real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
+real(pr), dimension(1:3*npart)  :: part, f, vel
 
     sumvv  = 0
     sumvv2 = 0
@@ -176,26 +166,15 @@ real(pr), allocatable           :: part(:), f(:), vel(:)
 
     !nuevas velocidades
     v_new = vel + (f + f_old)/(2._pr*dt)
-
     sumvv2 = sum(v_new**2)
-!~     do j = 1, npart
-!~         i = j*3 - 2
-!~         !sumvv  = sumvv  + (vel(i) + vel(i+1) + vel(i+2))
-!~         sumvv2 = sumvv2 + (v_new(i)*v_new(i) + v_new(i+1)*vel(i+1) + vel(i+2)*vel(i+2))
-!~     end do
 
     ! calculo temperatura y energia
     temp_k = sumvv2/real(3*npart, pr)
     e_tot = (en + 0.5_pr * sumvv2)/real(npart, pr)
 
     ! actualizo
-    !x_old = part
     part = x_new
     vel = v_new
-
-    deallocate(x_new)
-    deallocate(v_new)
-    deallocate(f_old)
 
 end subroutine integrate
 

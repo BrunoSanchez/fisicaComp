@@ -24,7 +24,7 @@ integer, parameter              :: npart=256
 real(pr)                        :: e_cut, r_cut2, en, e_tot, temp_k
 real(pr), parameter             :: temp=1.1_pr, a=5._pr**(1._pr/3._pr)
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
-real(pr), allocatable           :: vel(:), part(:), f(:), x_old(:)
+real(pr), dimension(1:3*npart)  :: vel, part, f
 
 
 36 format(I12, 2X, 4(ES14.6e2, 2X))
@@ -46,7 +46,7 @@ end do
 close(10)
 print*, 'vel init'
 
-call vel_init(npart, temp, vel, dt, part, x_old)
+call vel_init(npart, temp, vel, dt, part)
 open(unit=10, file='vel_init.dat', status='unknown')
 write(10, *) '# i   vx    vy    vz   '
 do i = 1, npart
@@ -61,14 +61,13 @@ close(10)
 !~ end do
 !~ close(10)
 
-allocate(f(1:3*npart))
 call force(part, npart, a, f, r_cut2, e_cut, en)
 
 
 open(11, file='energies_temp.dat', status='unknown')
 write(11, *) '# step   e_pot   ek    etot   temp'
 do k =1, nstep
-    call integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, x_old, e_tot, temp_k)
+    call integrate(f, en, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
     write(11, 36) k, en, e_tot-en, e_tot, temp_k
 end do
 
