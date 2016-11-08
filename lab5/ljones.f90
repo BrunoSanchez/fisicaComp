@@ -21,8 +21,7 @@ use mtmod, only                 : grnd
 implicit none
 integer                         :: npart
 real(pr), allocatable           :: vel(:), part(:), f(:)
-real(pr)                        :: r_cut2, a
-real(pr)                        :: eu, ek, e_cut, temp_k, e_tot
+real(pr)                        :: r_cut2, a, e_cut
 real(pr), allocatable           :: f_old(:), x_new(:), v_new(:)
 
 contains
@@ -147,6 +146,7 @@ end subroutine force
 
 subroutine integrate(dt)
 integer                         :: i, j, k
+real(pr), intent(out)           :: eu, ek, temp_k, e_tot
 real(pr)                        :: sumvv, sumvv2, dt
 
     sumvv  = 0

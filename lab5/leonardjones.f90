@@ -23,6 +23,7 @@ integer                         :: nstep, j, i, k
 real(pr)                        :: l, ln, t
 real(pr), parameter             :: temp=1.1_pr
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
+real(pr)                        :: eu, ek, temp_k, e_tot
 
 npart = 256
 a=5._pr**(1._pr/3._pr)
