@@ -20,27 +20,20 @@ use ljones
 
 implicit none
 integer                         :: nstep, j, i, k
-real(pr)                        :: l, ln, t
+integer, parameter              :: npart=256
+real(pr)                        :: l, ln, t, a, r_cut2
 real(pr), parameter             :: temp=1.1_pr
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
-real(pr)                        :: eu, ek, temp_k, e_tot
-
-npart = 256
-a=5._pr**(1._pr/3._pr)
-
-allocate(f(1:3*npart))
-allocate(part(1:3*npart))
-allocate(vel(1:3*npart))
-allocate(f_old(1:3*npart))
-allocate(x_new(1:3*npart))
-allocate(v_new(1:3*npart))
-
+real(pr)                        :: eu, ek, temp_k, e_tot, e_cut
+real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
+real(pr), dimension(1:3*npart)  :: part, f, vel
 
 34 format(I12, 2X, 3(ES14.6e2, 2X))
 36 format(F12.6, 2X, 4(ES14.6e2, 2X))
 38 format(F12.6, 2X, 6(ES14.6e2, 2X))
 
 print*, 'Starting'
+a=5._pr**(1._pr/3._pr)
 nstep = nint((tf-t0)/dt)
 r_cut2 = 2.5_pr*2.5_pr
 e_cut = (4._pr/r_cut2**3) * (1._pr/(r_cut2**3) - 1._pr)
@@ -52,7 +45,7 @@ l = ln * a
 
 
 print*, 'fcc init'
-call fcc_init()
+call fcc_init(npart, a, part)
 part = part - l * nint(part/l)
 open(unit=10, file='fcc_part.dat', status='unknown')
 write(10, *) '# i   x    y    z   '
@@ -60,9 +53,9 @@ do i = 1, npart
     write(10, 34) i, part(i*3-2), part(i*3-1), part(i*3)
 end do
 close(10)
-print*, 'vel init'
 
-call vel_init(temp, dt)
+print*, 'vel init'
+call vel_init(npart, temp, vel, dt, part)
 open(unit=10, file='vel_init.dat', status='unknown')
 write(10, *) '# i   vx    vy    vz   '
 do i = 1, npart
@@ -71,7 +64,7 @@ end do
 close(10)
 
 
-call force()
+call force(part, npart, a, f, r_cut2, e_cut, eu)
 
 open(11, file='energies_temp.dat', status='unknown')
 write(11, *) '# step   ek   eu    etot   temp'
@@ -82,7 +75,7 @@ write(13, *) '# step   x   y   z   vx   vy   vz'
 
 
 do k = 1, 1000
-    call integrate(dt)
+    call integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
 
     part = part - l * nint(part/l)
     if (mod(k, 50)==0) then
@@ -94,7 +87,7 @@ end do
 
 do k =1, nstep
     t = t0 + dt * k
-    call integrate(dt)
+    call integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
 
     part = part - l * nint(part/l)
 
