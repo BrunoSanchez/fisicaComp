@@ -27,7 +27,7 @@ integer                         :: i
 integer                         :: npart, ln
 integer                         :: ix, iy, iz
 real(pr), dimension(1:3*npart)  :: part
-real(pr)                        :: a
+real(pr)                        :: a, l
 
     ln = int((real(npart, pr)/4._pr)**(1./3.))
 
@@ -64,6 +64,8 @@ real(pr)                        :: a
     end do
 
     part = part * a
+    l = real(ln, pr) * a
+    part = part - l * nint(part/l)
 end subroutine fcc_init
 
 
@@ -161,7 +163,7 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 
     ! nuevas fuerzas
     f_old = f
-    call force(part, npart, a, f, r_cut2, e_cut, eu)
+    call force(x_new, npart, a, f, r_cut2, e_cut, eu)
 
     !nuevas velocidades
     v_new  = vel + dt * (f + f_old)/2._pr

@@ -23,7 +23,7 @@ integer                         :: nstep, i, k
 integer, parameter              :: npart=256
 real(pr)                        :: l, ln, t, a, r_cut2
 real(pr), parameter             :: temp=1.1_pr
-real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
+real(pr), parameter             :: dt=0.005, tf=5., t0 = 0.
 real(pr)                        :: eu, ek, temp_k, e_tot, e_cut
 !real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
 real(pr), dimension(1:3*npart)  :: part, f, vel
@@ -46,7 +46,6 @@ l = ln * a
 
 print*, 'fcc init'
 call fcc_init(npart, a, part)
-part = part - l * nint(part/l)
 open(unit=10, file='fcc_part.dat', status='unknown')
 write(10, *) '# i   x    y    z   '
 do i = 1, npart
