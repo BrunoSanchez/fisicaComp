@@ -23,7 +23,7 @@ integer                         :: nstep, i, k
 integer, parameter              :: npart=256
 real(pr)                        :: l, ln, t, a, r_cut2
 real(pr), parameter             :: temp=1.1_pr
-real(pr), parameter             :: dt=0.005, tf=5., t0 = 0.
+real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
 real(pr)                        :: eu, ek, temp_k, e_tot, e_cut
 !real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
 real(pr), dimension(1:3*npart)  :: part, f, vel
@@ -32,7 +32,7 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 !!!!!!!!!!!!!!!!!!!!  Formats for printing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 34 format(I12, 2X, 3(ES14.6e2, 2X))
 36 format(F12.6, 2X, 4(ES14.6e2, 2X))
-38 format(F12.6, 2X, 6(ES14.6e2, 2X))
+!38 format(F12.6, 2X, 6(ES14.6e2, 2X))
 
 
 !!!!!!!!!!!!!!!!!!!!  Initial conditions and settings!!!!!!!!!!!!!!!!!!!!!!!!!!
