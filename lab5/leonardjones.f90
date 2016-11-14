@@ -23,7 +23,7 @@ integer                         :: nstep, i, k
 integer, parameter              :: npart=256
 real(pr)                        :: l, ln, t, a, r_cut2
 real(pr), parameter             :: temp=1.1_pr
-real(pr), parameter             :: dt=0.005, tf=5., t0 = 0.
+real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
 real(pr)                        :: eu, ek, temp_k, e_tot, e_cut
 !real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
 real(pr), dimension(1:3*npart)  :: part, f, vel
@@ -32,7 +32,7 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 !!!!!!!!!!!!!!!!!!!!  Formats for printing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 34 format(I12, 2X, 3(ES14.6e2, 2X))
 36 format(F12.6, 2X, 4(ES14.6e2, 2X))
-38 format(F12.6, 2X, 6(ES14.6e2, 2X))
+!38 format(F12.6, 2X, 6(ES14.6e2, 2X))
 
 
 !!!!!!!!!!!!!!!!!!!!  Initial conditions and settings!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -75,6 +75,8 @@ call force(part, npart, a, f, r_cut2, e_cut, eu)
 
 open(11, file='energies_temp.dat', status='unknown')
 write(11, *) '# step   ek   eu    etot   temp'
+open(12, file='energies_temp.dat', status='unknown')
+write(12, *) '# step   ek   eu    etot   temp'
 
 !!!!!!!!!!!!!!!!!!  Termalization !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 do k = 1, 1000
@@ -87,7 +89,7 @@ do k = 1, 1000
 end do
 
 !!!!!!!!!!!!!!!!!  Integration of motion   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-do k =1, nstep
+do k =1, 10000
     t = t0 + dt * k
     call integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
     part = part - l * nint(part/l)
@@ -95,8 +97,9 @@ do k =1, nstep
     write(11, 36) t, ek, eu, e_tot, temp_k
 
 end do
-
-
 close(11)
+close(12)
+
+
 
 end program
