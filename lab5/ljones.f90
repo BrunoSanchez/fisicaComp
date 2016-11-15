@@ -99,15 +99,16 @@ real(pr)                        :: sumv(1:3), sumv2(1:3), fs, temp
 end subroutine vel_init
 
 
-subroutine force(part, npart, a, f, r_cut2, e_cut, eu)
+subroutine force(part, npart, a, f, r_cut2, e_cut, eu, p)
 integer                         :: i, j
 integer                         :: npart
 real(pr)                        :: r2, r_cut2, a, ff, r2i, r6i
 real(pr)                        :: eu, e_cut, l, ln
-real(pr)                        :: dx, dy, dz
+real(pr)                        :: dx, dy, dz. p
 real(pr), dimension(1:3*npart)  :: part, f
 
     f = 0
+    p = 0
     eu = 0._pr
     ln = real(npart/4, pr)**(1./3.)
     l = ln * a
@@ -139,6 +140,8 @@ real(pr), dimension(1:3*npart)  :: part, f
                 f(3*j - 1) = f(3*j - 1) - ff*dy
                 f(3*j)     = f(3*j)     - ff*dz
 
+                p = p + ff*(dx+dy+dz)
+
                 eu = eu + (4._pr*r6i*(r6i-1._pr) - e_cut)
             end if
         end do
@@ -148,8 +151,8 @@ end subroutine force
 
 
 subroutine integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
-integer                         :: npart
-real(pr)                        :: r_cut2, a
+integer                         :: npart, ii, jj
+real(pr)                        :: r_cut2, a, p
 real(pr)                        :: eu, ek, e_cut, temp_k, e_tot
 real(pr)                        :: sumvv, sumvv2, dt
 real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
@@ -163,14 +166,16 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 
     ! nuevas fuerzas
     f_old = f
-    call force(x_new, npart, a, f, r_cut2, e_cut, eu)
+    call force(x_new, npart, a, f, r_cut2, e_cut, eu, p)
 
     !nuevas velocidades
     v_new  = vel + dt * (f + f_old)/2._pr
     sumvv2 = sum(v_new**2)
 
-    ! calculo temperatura y energia
+    ! calculo temperatura, presion y energia
     temp_k = sumvv2/real(3*npart, pr)
+    P_t = 0.8_pr * temp_k + p/(12._pr * a*a*a)
+
     ek = 0.5_pr * sumvv2
     e_tot  = eu + ek
 
