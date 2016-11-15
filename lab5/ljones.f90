@@ -104,7 +104,7 @@ integer                         :: i, j
 integer                         :: npart
 real(pr)                        :: r2, r_cut2, a, ff, r2i, r6i
 real(pr)                        :: eu, e_cut, l, ln
-real(pr)                        :: dx, dy, dz. p
+real(pr)                        :: dx, dy, dz, p
 real(pr), dimension(1:3*npart)  :: part, f
 
     f = 0
@@ -140,19 +140,20 @@ real(pr), dimension(1:3*npart)  :: part, f
                 f(3*j - 1) = f(3*j - 1) - ff*dy
                 f(3*j)     = f(3*j)     - ff*dz
 
-                p = p + ff*(dx+dy+dz)
+                p = p + ff*r2
 
                 eu = eu + (4._pr*r6i*(r6i-1._pr) - e_cut)
             end if
         end do
     end do
 
+    p = p/real(3*64*a*a*a, pr)
 end subroutine force
 
 
-subroutine integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
-integer                         :: npart, ii, jj
-real(pr)                        :: r_cut2, a, p
+subroutine integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k, P_t)
+integer                         :: npart
+real(pr)                        :: r_cut2, a, p, P_t
 real(pr)                        :: eu, ek, e_cut, temp_k, e_tot
 real(pr)                        :: sumvv, sumvv2, dt
 real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
@@ -174,7 +175,7 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 
     ! calculo temperatura, presion y energia
     temp_k = sumvv2/real(3*npart, pr)
-    P_t = 0.8_pr * temp_k + p/(12._pr * a*a*a)
+    P_t = 0.8_pr * temp_k + p
 
     ek = 0.5_pr * sumvv2
     e_tot  = eu + ek
