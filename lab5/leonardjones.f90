@@ -75,6 +75,8 @@ call force(part, npart, a, f, r_cut2, e_cut, eu)
 
 open(11, file='energies_temp.dat', status='unknown')
 write(11, *) '# step   ek   eu    etot   temp'
+open(12, file='energies_temp.dat', status='unknown')
+write(12, *) '# step   ek   eu    etot   temp'
 
 !!!!!!!!!!!!!!!!!!  Termalization !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 do k = 1, 1000
@@ -87,7 +89,7 @@ do k = 1, 1000
 end do
 
 !!!!!!!!!!!!!!!!!  Integration of motion   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-do k =1, nstep
+do k =1, 10000
     t = t0 + dt * k
     call integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k)
     part = part - l * nint(part/l)
@@ -95,8 +97,9 @@ do k =1, nstep
     write(11, 36) t, ek, eu, e_tot, temp_k
 
 end do
-
-
 close(11)
+close(12)
+
+
 
 end program

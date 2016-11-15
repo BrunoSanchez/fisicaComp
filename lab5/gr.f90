@@ -13,8 +13,20 @@
 ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ! GNU General Public License for more details.
 !
-subroutine gr(switch)
+module gr
+use precision, pr=>dp
 
+implicit none
+integer                         :: nhis, switch
+integer, allocatable            :: g(:)
+real(pr)                        :: box
+
+contains
+
+subroutine gr(switch)
+integer                         :: i, j, k
+integer                         :: ngr
+real(pr)                        :: delg
 
     if (switch==0) then
         ngr = 0
