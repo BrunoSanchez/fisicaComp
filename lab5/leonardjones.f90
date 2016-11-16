@@ -20,20 +20,22 @@ use ljones
 
 implicit none
 integer                         :: nstep, i, k
-integer, parameter              :: npart=256
-real(pr)                        :: l, ln, t, a, r_cut2
+integer, parameter              :: npart=256, nbins=20
+real(pr)                        :: l, ln, t, a, r_cut2, delta, lo_lim, hi_lim
 real(pr), parameter             :: temp=1.1_pr
 real(pr), parameter             :: dt=0.005, tf=100., t0 = 0.
 real(pr)                        :: eu, ek, temp_k, e_tot, e_cut, P_t, p
 !real(pr), dimension(1:3*npart)  :: f_old, x_new, v_new
 real(pr), dimension(1:3*npart)  :: part, f, vel
+integer, dimension(1:nbins)     :: countsvx, countsvy, countsvz
+real(pr), dimension(0:nbins)    :: bins
 
 
 !!!!!!!!!!!!!!!!!!!!  Formats for printing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 34 format(I12, 2X, 3(ES14.6e2, 2X))
+38 format(F12.6, 2X, 3(I12, 2X))
 36 format(F12.6, 2X, 5(ES14.6e2, 2X))
 !38 format(F12.6, 2X, 6(ES14.6e2, 2X))
-
 
 !!!!!!!!!!!!!!!!!!!!  Initial conditions and settings!!!!!!!!!!!!!!!!!!!!!!!!!!
 print*, 'Starting'
@@ -49,6 +51,19 @@ p = 0._pr
 ln = real(npart/4, pr)**(1./3.)
 l = ln * a
 
+!!!!!!!!!!!!!!!!!!!!  Accumulators for statistics  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!~ cum_eu = 0._pr
+!~ cum_ek = 0._pr
+!~ cum_et = 0._pr
+!~ cum_pt = 0._pr
+!~ cum_te = 0._pr
+!~ cum_eu2 = 0._pr
+!~ cum_ek2 = 0._pr
+!~ cum_et2 = 0._pr
+!~ cum_pt2 = 0._pr
+!~ cum_te2 = 0._pr
+lo_lim = -10._pr
+hi_lim =  10._pr
 
 !!!!!!!!!!!!!!!!!!!!  Putting a FCC Lattice  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 print*, 'fcc init'
@@ -77,8 +92,6 @@ call force(part, npart, a, f, r_cut2, e_cut, eu, p)
 
 open(11, file='energies_temp.dat', status='unknown')
 write(11, *) '# step   ek   eu    etot   temp   P'
-!~ open(12, file='energies_temp.dat', status='unknown')
-!~ write(12, *) '# step   ek   eu    etot   temp'
 
 !!!!!!!!!!!!!!!!!!  Termalization !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 do k = 1, 1000
@@ -90,18 +103,30 @@ do k = 1, 1000
     end if
 end do
 
+call histo_init(bins, countsvx, nbins, lo_lim, hi_lim, delta)
+call histo_init(bins, countsvy, nbins, lo_lim, hi_lim, delta)
+call histo_init(bins, countsvz, nbins, lo_lim, hi_lim, delta)
+
+
 !!!!!!!!!!!!!!!!!  Integration of motion   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 do k =1, 10000
     t = t0 + dt * k
     call integrate(f, eu, ek, part, vel, npart, a, r_cut2, e_cut, dt, e_tot, temp_k, P_t)
     part = part - l * nint(part/l)
 
+    call hist_vel(vel, nbins, countsvx, countsvy, countsvz, npart, bins, delta)
     write(11, 36) t, ek, eu, e_tot, temp_k, P_t
 
 end do
 close(11)
-!~ close(12)
 
 
+open(12, file='histogram_v.dat', status='unknown')
+write(12, *) '# bin   countsvx   countsvy    countsvz   '
+do i = 1, nbins
+    write(12, 38) lo_lim+delta/2._pr*i, countsvx(i), countsvy(i), countsvz(i)
+end do
+close(12)
+print*, nbins
 
 end program

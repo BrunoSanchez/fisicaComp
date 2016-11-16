@@ -187,5 +187,56 @@ real(pr), dimension(1:3*npart)  :: part, f, vel
 end subroutine integrate
 
 
+subroutine hist_vel(vel, nbins, countsvx, countsvy, countsvz, npart, bins, delta)
+integer                         :: i
+integer                         :: nbins, npart
+integer, dimension(1:nbins)     :: countsvx, countsvy, countsvz
+real(pr), dimension(1:3*npart)  :: vel
+real(pr), dimension(0:nbins)    :: bins
+real(pr)                        :: vx, vy, vz, delta
+
+    do i = 1, npart
+        vx = vel(3*i - 2)
+        vy = vel(3*i - 1)
+        vz = vel(3*i)
+
+        call histogram(bins, vx, countsvx, nbins, delta)
+        call histogram(bins, vy, countsvy, nbins, delta)
+        call histogram(bins, vz, countsvz, nbins, delta)
+
+    end do
+
+end subroutine
+
+
+subroutine histo_init(bins, counts, nbins, lo_lim, hi_lim, delta)
+integer                             :: j
+integer, intent(in)                 :: nbins
+integer, intent(inout)              :: counts(1:nbins)
+real(pr), intent(inout)             :: bins(0:nbins), delta
+real(pr), intent(in)                :: lo_lim, hi_lim
+
+    counts = 0
+    delta = (hi_lim - lo_lim)/real(nbins, pr)
+    do j = 0, nbins
+        bins(j) = lo_lim + j * delta
+    end do
+
+end subroutine
+
+
+
+subroutine histogram(bins, datapoint, counts, nbins, delta)
+integer                             :: ibin
+integer, intent(in)                 :: nbins
+integer, intent(inout)              :: counts(1:nbins)
+real(pr), intent(in)                :: bins(0:nbins), delta
+real(pr), intent(in)                :: datapoint
+
+    ibin = int( (datapoint - bins(0))/delta ) + 1
+    counts(ibin) = counts(ibin) + 1
+
+end subroutine
+
 
 end module
